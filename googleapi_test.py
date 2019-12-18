@@ -25,17 +25,21 @@ response = urllib.request.urlopen(request).read()  # 讀進路徑程式碼
 directions = json.loads(response.decode('utf-8'))  # 將java資訊轉換為python可讀的型態
 print(directions)
 
-transport_means = []
-steps = directions['routes'][0]['legs'][0]['steps']  # route路徑/legs每個路徑中的各交通方式/steps各交通方式的詳細資訊
-for item in steps:
-    if item['travel_mode'] == 'TRANSIT':  # transit為選擇大眾運輸工具
-        transport_info = []
-        transport_info.append(item['transit_details']['line']['vehicle']['type'])  # 交通工具
-        transport_info.append(item['transit_details']['line']['short_name'])  # 路線編碼
-        transport_info.append(item['transit_details']['departure_stop']['name'])  # 起點站名
-        transport_info.append(item['transit_details']['arrival_stop']['name'])  # 終點站名
-        transport_info.append(item['transit_details']['departure_time']['value'])  # 以秒計的時間戳
-        
-        transport_means.append(transport_info)
+if directions['status'] == 'ZERO_RESULTS':
+    print('I found no route.')#結果顯示找不到路徑
 
-print(transport_means)
+else:
+    transport_means = []
+    steps = directions['routes'][0]['legs'][0]['steps']  # route路徑/legs每個路徑中的各交通方式/steps各交通方式的詳細資訊
+    for item in steps:
+        if item['travel_mode'] == 'TRANSIT':  # transit為選擇大眾運輸工具
+            transport_info = []
+            transport_info.append(item['transit_details']['line']['vehicle']['type'])  # 交通工具
+            transport_info.append(item['transit_details']['line']['short_name'])  # 路線編碼
+            transport_info.append(item['transit_details']['departure_stop']['name'])  # 起點站名
+            transport_info.append(item['transit_details']['arrival_stop']['name'])  # 終點站名
+            transport_info.append(item['transit_details']['departure_time']['value'])  # 以秒計的時間戳
+            
+            transport_means.append(transport_info)
+
+    print(transport_means)
