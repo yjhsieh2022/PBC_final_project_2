@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>TaiwanGo Input</title>
+</head>
+<body>
+    <form method='post' action={{ url_for('go') }}>  
+        <p>
+        <input type='text' name='startpoint'>From where? </input>
+        <input type='text' name='destination'>To where? </input>
+    </p>
+        <p>
+        <button type='submit'>GO for it</button>
+    </p>    
+    </form>
+</body>
+</html>
