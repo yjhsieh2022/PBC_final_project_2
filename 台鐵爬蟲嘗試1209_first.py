@@ -59,6 +59,9 @@ def train_price(start, end, train_number, date):
     #台鐵車票是在取票時才決訂票的種類，付款時再指定票種即可，故網址相同
     adult = ['全票', number2price[train_number][0], url]
     kid = ['半票', number2price[train_number][1], url]
+    #group = ['20人至40人的團體票',int(number2price[train_number][0] * 0.8), url]
+    #團體網路訂票系統開放申購時間為每日 09:00~16:30。每日 08:50 可進入填寫資料
+    #50人以上需要事先申請
     return adult, kid
     
 '''input起訖點和車次'''    
@@ -72,7 +75,7 @@ event = train_price(start, end, train_number, date)
 print(event)
 
     
-'''在訂票網址輸入訂票資訊'''
+'''在訂票網址輸入訂票資訊
 driver = webdriver.Chrome(executable_path ='C:\\Users\\User\\Desktop\\course in NTU\\選修\\商管程式設計\\chromedriver.exe')
 driver.get("https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query")
 startpoint = driver.find_element_by_name("ticketOrderParamList[0].startStation")
@@ -85,4 +88,4 @@ ridedate.send_keys(date)
 train = driver.find_element_by_name("ticketOrderParamList[0].trainNoList[0]")
 train_only_num = filter(str.isdigit, train_number)
 train.send_keys(''.join(list(train_only_num)))
-#輸入車次時不加車種才符合搜尋格式
+#輸入車次時不加車種才符合搜尋格式'''
