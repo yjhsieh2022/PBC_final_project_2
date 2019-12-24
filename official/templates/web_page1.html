@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome TaiwanGO</title>
+</head>
+<body>
+    Hi, there. This is TaiwanGO! How may I help you?
+    Press "start" and start to plan your journey in Taiwan!
+    <form method='post' action={{ url_for('home') }}>  
+        <p>
+        <input type='text' name='startpoint' placeholder='從：城市、車站、地點'></input>
+        <input type='text' name='destination' placeholder='到：城市、車站、地點'></input>
+    </p>
+        <p>
+        <button type='submit'>Start!</button>
+    </p>    
+    </form>
+</body>
+</html>
