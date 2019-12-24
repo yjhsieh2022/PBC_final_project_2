@@ -8,3 +8,7 @@ def home():
         return redirect(url_for('routechoices'))
 
     return render_template('web_page1.html')
+
+if __name__ == '__main__':
+    taiwango.debug = True
+    taiwango.run()
