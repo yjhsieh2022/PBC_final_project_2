@@ -1,6 +1,39 @@
+import requests
 from selenium import webdriver
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.keys import Keys
+
+
+'''建立站名和車站代碼的字典'''
+url = "https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip111/view"
+r = requests.get(url)
+soup = BeautifulSoup(r.text, 'html.parser')
+
+attr = {"class":"traincode_code1"}
+train_code_list = []
+train_code_tags = soup.find_all("div", attrs = attr)
+for tag in train_code_tags:
+    train_code_list.append(tag.get_text())
+
+attr = {"class":"traincode_name1"}
+train_name_list = []
+train_name_tags = soup.find_all("div", attrs = attr)
+for tag in train_name_tags:
+    train_name_list.append(tag.get_text())
+
+NameCode = []
+for i in range(len(train_code_list)):
+    NameCode.append(train_code_list[i] + '-' + train_name_list[i])
+    
+Name2NameCode = {}
+for i in range(len(train_code_list)):
+    Name2NameCode[train_name_list[i]] = NameCode[i]
+
+'''input起訖點和車次'''
+start = Name2NameCode[input()]
+end = Name2NameCode[input()]
+train_number = "莒光1"
+date = "20191222"
 
 driver = webdriver.Chrome(executable_path ='C:\\Users\\User\\Desktop\\course in NTU\\選修\\商管程式設計\\chromedriver.exe')
 driver.get("https://tip.railway.gov.tw/tra-tip-web/tip/tip001/tip112/gobytime")
@@ -64,12 +97,6 @@ def train_price(start, end, train_number, date):
     #50人以上需要事先申請
     return adult, kid
     
-'''input起訖點和車次'''    
-start = "1000-臺北"
-end = "4400-高雄"
-train_number = "莒光1"
-date = "20191222"
-
 '''根據車次尋找對應的票價資訊'''
 event = train_price(start, end, train_number, date)
 print(event)
