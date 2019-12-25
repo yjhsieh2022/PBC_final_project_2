@@ -32,8 +32,7 @@ for i in range(len(train_code_list)):
 '''input起訖點和車次'''
 start = Name2NameCode[input()]
 end = Name2NameCode[input()]
-train_number = "莒光1"
-date = "20191222"
+train_number = input()
 
 driver = webdriver.Chrome(executable_path ='C:\\Users\\User\\Desktop\\course in NTU\\選修\\商管程式設計\\chromedriver.exe')
 driver.get("https://tip.railway.gov.tw/tra-tip-web/tip/tip001/tip112/gobytime")
@@ -41,7 +40,7 @@ driver.get("https://tip.railway.gov.tw/tra-tip-web/tip/tip001/tip112/gobytime")
 
 
 
-def train_price(start, end, train_number, date):
+def train_price(start, end, train_number):
     startpoint = driver.find_element_by_name("startStation")
     startpoint.send_keys(start)
 
@@ -98,7 +97,7 @@ def train_price(start, end, train_number, date):
     return adult, kid
     
 '''根據車次尋找對應的票價資訊'''
-event = train_price(start, end, train_number, date)
+event = train_price(start, end, train_number)
 print(event)
 
     
