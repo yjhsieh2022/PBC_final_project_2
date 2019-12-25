@@ -36,9 +36,13 @@ for i in range(len(train_code_list)):
 start = input()
 if '台' in start:
     start = start.replace('台','臺')
+if start == "新烏日火車站":
+    start = "新烏日車站"
 end = input()
-if '台' in start:
+if '台' in end:
     end = end.replace('台','臺')
+if end == "新烏日火車站":
+    end = "新烏日車站"
 start = Name2NameCode[start]
 end = Name2NameCode[end]
 train_number = input()
