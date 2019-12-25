@@ -35,11 +35,11 @@ for i in range(len(train_code_list)):
 '''input起訖點和車次'''
 start = input()
 if '台' in start:
-    startstop = start.replace('台','臺')
+    start = start.replace('台','臺')
 end = input()
 if '台' in start:
     end = end.replace('台','臺')
-start = Name2NameCode[startstop]
+start = Name2NameCode[start]
 end = Name2NameCode[end]
 train_number = input()
 
