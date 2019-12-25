@@ -3,7 +3,7 @@
 StartStation = '高鐵台中站'
 EndStation = '新左營站'
 DepartureDate = '2020/01/01'
-DepartureTime = '12:17'
+DepartureTime = '下午12:17'
 TrainNumber = '821'
 """
 
@@ -44,6 +44,19 @@ def HSHR(StartStation, EndStation, DepartureDate, DepartureTime, TrainNumber):
                '嘉義站':'60831846-f0e4-47f6-9b5b-46323ebdcef7',
                '台南站':'9c5ac6ca-ec89-48f8-aab0-41b738cb1814',
                '左營站':'f2519629-5973-4d08-913b-479cce78a356'}
+    
+    # 將google map 12小時制轉24小時制
+    if DepartureTime[:2] == '上午':
+        if DepartureTime[2:4] == '12':
+            DepartureTime = '00'+DepartureTime[4:]
+        else:    
+            DepartureTime = DepartureTime[2:]
+    elif DepartureTime[:2] == '下午':
+        if DepartureTime[2:4] == '12':
+            DepartureTime = DepartureTime[2:]
+        else:
+            index = DepartureTime.index(':')
+            DepartureTime = str(int(DepartureTime[2:index])+12)+DepartureTime[index:]
 
     # 高鐵車次號碼首位為1或0，若首位為0，google map會自動省略僅顯示三位數，需手動加零高鐵票價查詢系統爬價格才會對
     if len(TrainNumber) == 3:
@@ -100,7 +113,9 @@ def HSHR(StartStation, EndStation, DepartureDate, DepartureTime, TrainNumber):
     
     FullPrice = {'標準車廂':Coach[0],'商務車廂':Business[0],'自由座':Unreserved[0]}
     ChildPrice = {'標準車廂':Coach[1],'商務車廂':Business[1],'自由座':Unreserved[1]}
+    """團體票先註解掉
     GroupPrice = {'標準車廂':Coach[2],'商務車廂':Business[2]}  
+    """
     ColledgePrice = []
     
     # 將65折起等不確定的折數差成數個準確可對應的折數
@@ -110,10 +125,11 @@ def HSHR(StartStation, EndStation, DepartureDate, DepartureTime, TrainNumber):
             TrainDiscount['早鳥'] = earlybird['65折起']
         elif TrainDiscount['早鳥'] == ['8折起']:
             TrainDiscount['早鳥'] = earlybird['8折起']
+    """        
     if '校外教學' in TrainDiscount.keys():
         if TrainDiscount['校外教學'] == ['4/7折']:
             TrainDiscount['校外教學'] = ['4折', '7折']
-    
+    """
     # 早鳥放入全票類別，如果有大學生自成一類，25人、校外教學放入團體票類別
     if '早鳥' in TrainDiscount.keys():
         for values in TrainDiscount['早鳥']: 
@@ -125,6 +141,7 @@ def HSHR(StartStation, EndStation, DepartureDate, DepartureTime, TrainNumber):
             for Column in data['data']['PriceTable']['Column']:
                 if Column['ColumnName'] == values:
                     ColledgePrice = ['大學生'+Column['ColumnName'], Column['CoachPrice']]
+    """
     if '25人團體' in TrainDiscount.keys():            
         for values in TrainDiscount['25人團體']: 
             for Column in data['data']['PriceTable']['Column']:
@@ -138,10 +155,11 @@ def HSHR(StartStation, EndStation, DepartureDate, DepartureTime, TrainNumber):
                         GroupPrice['小學生校外教學4折'] = Column['CoachPrice']
                     elif values == '7折':
                         GroupPrice['中學、大學生校外教學7折'] = Column['CoachPrice']
-    
+    """
     Result = [  ['全票',FullPrice, 'https://irs.thsrc.com.tw/IMINT/'], 
                 ['孩童票/敬老票/愛心票', ChildPrice, 'https://irs.thsrc.com.tw/IMINT/'], 
-                ['11人以上團體票', GroupPrice, 'https://grp.thsrc.com.tw/tkcs_b2c/home/list?cp2Token=NAHF-0JF2-IL9D-EPGU-5YJJ-YYB7-F17X-EWQ1']]
+                #['11人以上團體票', GroupPrice, 'https://grp.thsrc.com.tw/tkcs_b2c/home/list?cp2Token=NAHF-0JF2-IL9D-EPGU-5YJJ-YYB7-F17X-EWQ1']
+                ]
     
     # 高鐵票價查詢若勾選全部優惠，有些沒有優惠的車次就不會跳出，造成Google Map 傳來的車次(沒有優惠)找不到，這些沒有優惠的車次在後台數據裡，data['data']['DepartureTable']['TrainItem']['Discount']為空，自然也找不到'早鳥','大學生','25人優惠'等字眼，若在最後直接跳出一個ColledgePrice，會跳出UndefinedError，所以要先檢查TrainDiscount是否為空
     # 大學生優惠是單獨的一類，其他優惠都是放在全票或團體票中，就算沒有優惠字典也不會是空的，但若沒有大學生優惠，會印出一個空的字典，因此要特別檢查: len(ColledgePrice) == 0?
@@ -150,4 +168,4 @@ def HSHR(StartStation, EndStation, DepartureDate, DepartureTime, TrainNumber):
 
     return Result
 
-print(HSHR('高鐵台中站','新左營站','2020/01/01','12:17','821'))
+print(HSHR('高鐵台中站','新左營站','2020/01/01','下午12:17','821'))
