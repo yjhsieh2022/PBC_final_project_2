@@ -17,21 +17,30 @@ for tag in train_code_tags:
 
 attr = {"class":"traincode_name1"}
 train_name_list = []
+train_name_without_station = []
 train_name_tags = soup.find_all("div", attrs = attr)
+
 for tag in train_name_tags:
-    train_name_list.append(tag.get_text())
+    StationName = tag.get_text()
+    train_name_list.append(StationName + "車站")
+    train_name_without_station.append(StationName)
 
 NameCode = []
 for i in range(len(train_code_list)):
-    NameCode.append(train_code_list[i] + '-' + train_name_list[i])
+    NameCode.append(train_code_list[i] + '-' + train_name_without_station[i])
     
 Name2NameCode = {}
 for i in range(len(train_code_list)):
     Name2NameCode[train_name_list[i]] = NameCode[i]
-
 '''input起訖點和車次'''
-start = Name2NameCode[input()]
-end = Name2NameCode[input()]
+start = input()
+if '台' in start:
+    startstop = start.replace('台','臺')
+end = input()
+if '台' in start:
+    end = end.replace('台','臺')
+start = Name2NameCode[startstop]
+end = Name2NameCode[end]
 train_number = input()
 
 driver = webdriver.Chrome(executable_path ='C:\\Users\\User\\Desktop\\course in NTU\\選修\\商管程式設計\\chromedriver.exe')
