@@ -25,8 +25,8 @@ class GoogleAPI:
         directions = json.loads(response.decode('utf-8'))
         #print(directions)
 
-        fare = directions['routes'][0]['fare']['text']
-        return fare
+        ticket_fare = directions['routes'][0]['fare']['text']
+        return ticket_fare
 
     def get_transport_info(origin, destination, year, month, day, hour, minutes):
         endpoint = 'https://maps.googleapis.com/maps/api/directions/json?'
@@ -58,23 +58,24 @@ class GoogleAPI:
                 for item in routes_list[i]:  # 個別交通方式的資訊
                     if item['travel_mode'] == 'TRANSIT':
                         if item['transit_details']['line']['vehicle']['type'] == 'BUS':  # 路線編號 起站 訖站
-                            transport_info = []
-                            transport_info.append(item['transit_details']['line']['vehicle']['type'])  # BUS
-                            transport_info.append(item['transit_details']['line']['short_name'])  # 路線編號
-                            transport_info.append(item['transit_details']['departure_stop']['name'])  # 起站名
-                            transport_info.append(item['transit_details']['arrival_stop']['name'])  # 訖站名
-                            departure_date_info = datetime.datetime.fromtimestamp(item['transit_details']['departure_time']['value'])  # 從UTC格式(秒)轉成datetime格式
-                            transport_info.append(departure_date_info.strftime('%Y/%m/%d'))     # 2019/12/05 //23:00(高鐵，日期，時間分兩個變數)
-                            transport_info.append(item['transit_details']['departure_time']['text'])  #上午/下午00:00
-                            arrival_date_info = datetime.datetime.fromtimestamp(item['transit_details']['arrival_time']['value'])  # 從UTC格式(秒)轉成datetime格式
-                            transport_info.append(arrival_date_info.strftime('%Y/%m/%d'))     # 2019/12/05 //23:00(高鐵，日期，時間分兩個變數)
-                            transport_info.append(item['transit_details']['arrival_time']['text'])  # 上午/下午00:00
-                            time = item['transit_details']['departure_time']['text'].split(':')
-                            dep_hour = time[0][2:]
-                            dep_minute = time[1]
-                            fare = GoogleAPI.get_bus_full_price(item['transit_details']['departure_stop']['name'], item['transit_details']['arrival_stop']['name'], year = int(year), month = int(month), day = int(day), hour = int(dep_hour), minutes = int(dep_minute))
-                            transport_info.append(fare)  # 全票票價(用來抓半票票價)
-                            transport_means.append(transport_info)
+                            if len(item['transit_details']['line']['short_name']) == 4:
+                                transport_info = []
+                                transport_info.append(item['transit_details']['line']['vehicle']['type'])  # BUS
+                                transport_info.append(item['transit_details']['line']['short_name'])  # 路線編號
+                                transport_info.append(item['transit_details']['departure_stop']['name'])  # 起站名
+                                transport_info.append(item['transit_details']['arrival_stop']['name'])  # 訖站名
+                                departure_date_info = datetime.datetime.fromtimestamp(item['transit_details']['departure_time']['value'])  # 從UTC格式(秒)轉成datetime格式
+                                transport_info.append(departure_date_info.strftime('%Y/%m/%d'))     # 2019/12/05 //23:00(高鐵，日期，時間分兩個變數)
+                                transport_info.append(item['transit_details']['departure_time']['text'])  #上午/下午00:00
+                                arrival_date_info = datetime.datetime.fromtimestamp(item['transit_details']['arrival_time']['value'])  # 從UTC格式(秒)轉成datetime格式
+                                transport_info.append(arrival_date_info.strftime('%Y/%m/%d'))     # 2019/12/05 //23:00(高鐵，日期，時間分兩個變數)
+                                transport_info.append(item['transit_details']['arrival_time']['text'])  # 上午/下午00:00
+                                time = item['transit_details']['departure_time']['text'].split(':')
+                                dep_hour = time[0][2:]
+                                dep_minute = time[1]
+                                fare = GoogleAPI.get_bus_full_price(item['transit_details']['departure_stop']['name'], item['transit_details']['arrival_stop']['name'], year = int(year), month = int(month), day = int(day), hour = int(dep_hour), minutes = int(dep_minute))
+                                transport_info.append(fare)  # 全票票價(用來抓半票票價)
+                                transport_means.append(transport_info)
                         elif item['transit_details']['line']['vehicle']['type'] == 'HEAVY_RAIL':  # 高鐵/台鐵
                             if item['transit_details']['line']['short_name'] == '高鐵':  # 高鐵  日期 格式是2019/12/13 起站 訖站 車次號碼
                                 transport_info = []
@@ -110,72 +111,77 @@ class GoogleAPI:
 
 # print(GoogleAPI.get_transport_info('台北', '高雄', 2019, 12, 20, 11, 30))
 
+
 class GetTicketPrice:
 
     def Bus(num_route, full_ticket_price):
-        '''
-        num_route = input(路線編號:)
-        data_pickedroute = '0_,' + str(num_route) + '_,0'
-        full_ticket_price = input(全票價格:)
-        ticket_type = input(全票輸入1,半票輸入0:)
-        '''
-        if 48 <= ord(num_route[0]) <= 57:
+        try:
+            '''
+            num_route = input(路線編號:)
             data_pickedroute = '0_,' + str(num_route) + '_,0'
-        else:
-            return None
-        '''找到填入url的代號'''
-        data_topost = {'Type':'GetKey', 'Data':data_pickedroute, 'Lang':'#'}
-        r_route = requests.post('https://www.taiwanbus.tw/APP_API/Test/ByLine.aspx', data=data_topost, verify=False)
-        R_Route = [ r.strip('_') for r in r_route.text.split(',')]
-
-        '''填入代號連到價格頁面'''
-        url_price_page = 'https://web.taiwanbus.tw/eBUS/subsystem/ticket/TMSquery.aspx?run_id=' + str(R_Route[4])  # 這裡是採用去程:R[4]；如果回程:R[9]
-        driver_price_page = webdriver.Chrome(executable_path ='C:\\Users\\linda\\Downloads\\chromedriver_win32\\chromedriver.exe')
-        driver_price_page.get(url_price_page)
-
-        html_price_page = driver_price_page.page_source
-        # driver_price_page.close()  # 先不關
-
-        soup_price_page = BeautifulSoup(html_price_page, 'html.parser')
-        attr_price_page = {'valign':'middle'}
-        price_tags = soup_price_page.find_all('td', attrs=attr_price_page)
-        price_list = []
-        for tag in price_tags:
-            price_list.append(tag.get_text())
-
-        price_len = len(price_list)//2  # 將全票半票資訊分開
-        full_price_list = price_list[:price_len]
-        half_price_list = price_list[price_len:]
-
-        stop_number = [0]  # 站名的index list
-        number = 0
-        for i in range(2,20):
-            number += i
-            stop_number.append(number)
-        # print(stop_number)
-
-        stop_list = []  # 站名list
-        full_price_tri_list = []  # 全票價格
-        for i in full_price_list:
-            if full_price_list.index(i) in stop_number:
-                stop_list.append(i)
+            full_ticket_price = input(全票價格:)
+            ticket_type = input(全票輸入1,半票輸入0:)
+            '''
+            if 48 <= ord(num_route[0]) <= 57:
+                data_pickedroute = '0_,' + str(num_route) + '_,0'
             else:
-                full_price_tri_list.append(i)
-        half_price_tri_list = []  # 半票價格
-        for i in half_price_list:
-            if half_price_list.index(i) not in stop_number:
-                half_price_tri_list.append(i)
-        # print(stop_list)
-        # print(full_price_tri_list)
-        # print(half_price_tri_list)
-        Full2Half = dict()
-        for i in range(len(full_price_tri_list)):
-            Full2Half[full_price_tri_list[i]]=half_price_tri_list[i]
-        
-        half_ticket_price = Full2Half[full_ticket_price]
-        Result = [['全票', full_ticket_price],['半票', half_ticket_price]]
-        
-        return Result
+                return None
+            '''找到填入url的代號'''
+            data_topost = {'Type':'GetKey', 'Data':data_pickedroute, 'Lang':'#'}
+            r_route = requests.post('https://www.taiwanbus.tw/APP_API/Test/ByLine.aspx', data=data_topost, verify=False)
+            R_Route = [ r.strip('_') for r in r_route.text.split(',')]
+
+            '''填入代號連到價格頁面'''
+            url_price_page = 'https://web.taiwanbus.tw/eBUS/subsystem/ticket/TMSquery.aspx?run_id=' + str(R_Route[4])  # 這裡是採用去程:R[4]；如果回程:R[9]
+            driver_price_page = webdriver.Chrome(executable_path ='C:\\Users\\linda\\Downloads\\chromedriver_win32\\chromedriver.exe')
+            driver_price_page.get(url_price_page)
+
+            html_price_page = driver_price_page.page_source
+            # driver_price_page.close()  # 先不關
+
+            soup_price_page = BeautifulSoup(html_price_page, 'html.parser')
+            attr_price_page = {'valign':'middle'}
+            price_tags = soup_price_page.find_all('td', attrs=attr_price_page)
+            price_list = []
+            for tag in price_tags:
+                price_list.append(tag.get_text())
+
+            price_len = len(price_list)//2  # 將全票半票資訊分開
+            full_price_list = price_list[:price_len]
+            half_price_list = price_list[price_len:]
+
+            stop_number = [0]  # 站名的index list
+            number = 0
+            for i in range(2,20):
+                number += i
+                stop_number.append(number)
+            # print(stop_number)
+
+            stop_list = []  # 站名list
+            full_price_tri_list = []  # 全票價格
+            for i in full_price_list:
+                if full_price_list.index(i) in stop_number:
+                    stop_list.append(i)
+                else:
+                    full_price_tri_list.append(i)
+            half_price_tri_list = []  # 半票價格
+            for i in half_price_list:
+                if half_price_list.index(i) not in stop_number:
+                    half_price_tri_list.append(i)
+            # print(stop_list)
+            # print(full_price_tri_list)
+            # print(half_price_tri_list)
+            Full2Half = dict()
+            for i in range(len(full_price_tri_list)):
+                Full2Half[full_price_tri_list[i]]=half_price_tri_list[i]
+            
+            half_ticket_price = Full2Half[full_ticket_price]
+            Result = [['全票', full_ticket_price],['半票', half_ticket_price]]
+            
+            return Result
+        except:
+            Result = ['全票', full_ticket_price]
+            return Result
 
     #print(get_bus_price('1062', '61', '0'))
 
@@ -284,8 +290,8 @@ class GetTicketPrice:
         ChildPrice = {'標準車廂':Coach[1],'商務車廂':Business[1],'自由座':Unreserved[1]}
         """團體票先註解掉
         GroupPrice = {'標準車廂':Coach[2],'商務車廂':Business[2]}  
-        """
         ColledgePrice = []
+        """
         
         # 將65折起等不確定的折數差成數個準確可對應的折數
         earlybird = {'65折起':['65折','8折','9折'], '8折起':['8折','9折']}
@@ -309,7 +315,7 @@ class GetTicketPrice:
             for values in TrainDiscount['大學生']: 
                 for Column in data['data']['PriceTable']['Column']:
                     if Column['ColumnName'] == values:
-                        ColledgePrice = ['大學生'+Column['ColumnName'], Column['CoachPrice']]
+                        FullPrice ['大學生'+Column['ColumnName']] = Column['CoachPrice']
         """
         if '25人團體' in TrainDiscount.keys():            
             for values in TrainDiscount['25人團體']: 
@@ -329,11 +335,12 @@ class GetTicketPrice:
                     ['孩童票/敬老票/愛心票', ChildPrice, 'https://irs.thsrc.com.tw/IMINT/'], 
                     #['11人以上團體票', GroupPrice, 'https://grp.thsrc.com.tw/tkcs_b2c/home/list?cp2Token=NAHF-0JF2-IL9D-EPGU-5YJJ-YYB7-F17X-EWQ1']
                     ]
-        
+        """
         # 高鐵票價查詢若勾選全部優惠，有些沒有優惠的車次就不會跳出，造成Google Map 傳來的車次(沒有優惠)找不到，這些沒有優惠的車次在後台數據裡，data['data']['DepartureTable']['TrainItem']['Discount']為空，自然也找不到'早鳥','大學生','25人優惠'等字眼，若在最後直接跳出一個ColledgePrice，會跳出UndefinedError，所以要先檢查TrainDiscount是否為空
         # 大學生優惠是單獨的一類，其他優惠都是放在全票或團體票中，就算沒有優惠字典也不會是空的，但若沒有大學生優惠，會印出一個空的字典，因此要特別檢查: len(ColledgePrice) == 0?
         if len(TrainDiscount.keys()) != 0 and len(ColledgePrice) != 0:            
             Result.append([ColledgePrice[0], ColledgePrice[1], 'https://irs.thsrc.com.tw/IMINT/'])
+        """
 
         return Result
 
@@ -398,11 +405,17 @@ class GetTicketPrice:
         #50人以上需要事先申請
         return adult, kid
 
-
-api_output_list = GoogleAPI.get_transport_info('台北', '高雄', 2019, 12, 26, 11, 30)
+'''Input'''
+DEP_LOCATION = input('起點:')
+ARV_LOCATION = input('終點:')
+YEAR = int(input('年:'))
+MONTH = int(input('月:'))
+DAY = int(input('日:'))
+HOUR = int(input('小時:'))
+MINUTE = int(input('分鐘:'))
+api_output_list = GoogleAPI.get_transport_info(DEP_LOCATION, ARV_LOCATION, YEAR, MONTH, DAY, HOUR, MINUTE)
 api_output_list = api_output_list[:4]
 print(api_output_list)
-
 
 route_info = []
 for leg in api_output_list:
@@ -425,17 +438,72 @@ for leg in api_output_list:
                 hsr_info = ['高鐵', GetTicketPrice.HSHR(StartStation, EndStation, DepartureDate, DepartureTime, TrainNumber)]
                 leg_info.append(hsr_info)
             else:
+                '''建立站名和車站代碼的字典'''
+                url = "https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip111/view"
+                r = requests.get(url)
+                soup = BeautifulSoup(r.text, 'html.parser')
+
+                attr = {"class":"traincode_code1"}
+                train_code_list = []
+                train_code_tags = soup.find_all("div", attrs = attr)
+                for tag in train_code_tags:
+                    train_code_list.append(tag.get_text())
+
+                attr = {"class":"traincode_name1"}
+                train_name_list = []
+                train_name_without_station = []
+                train_name_tags = soup.find_all("div", attrs = attr)
+
+                for tag in train_name_tags:
+                    StationName = tag.get_text()
+                    train_name_list.append(StationName + "車站")
+                    train_name_without_station.append(StationName)
+
+                NameCode = []
+                for i in range(len(train_code_list)):
+                    NameCode.append(train_code_list[i] + '-' + train_name_without_station[i])
+                    
+                Name2NameCode = {}
+                for i in range(len(train_code_list)):
+                    Name2NameCode[train_name_list[i]] = NameCode[i]
+                '''input起訖點和車次'''
                 start = step[3]
+                if '台' in start:
+                    start = start.replace('台','臺')
+                if start == "新烏日火車站":
+                    start = "新烏日車站"
+                if start == "新左營站":
+                    start = "新左營車站"
                 end = step[4]
-                train_type = step[1]
-                if ord(train_type[-1:]) == 34399:
-                    train_type = train_type[:-1]
-                elif train_type == '復興/區間':
-                    train_type = '區間'
-                train_number = train_type + step[2]
-                # print(start, end, train_number)
-                # rail_info = ['台鐵', GetTicketPrice.Railway(start, end, train_number)]
-                # leg_info.append(rail_info)
+                if '台' in end:
+                    end = end.replace('台','臺')
+                if end == "新烏日火車站":
+                    end = "新烏日車站"
+                if end == "新左營站":
+                    end = "新左營車站"
+                start = Name2NameCode[start]
+                end = Name2NameCode[end]
+                rail_info = []
+                try:
+                    train_type = step[1]
+                    if ord(train_type[-1:]) == 34399:
+                        train_type = train_type[:-1]
+                        train_number = train_type + step[2]
+                        rail_info = ['台鐵', GetTicketPrice.Railway(start, end, train_number)]
+                    elif train_type == '復興/區間':
+                        try:
+                            train_type = '區間'
+                            train_number = train_type + step[2]
+                            rail_info = ['台鐵', GetTicketPrice.Railway(start, end, train_number)]
+                        except KeyError:
+                            train_type = '區間快'
+                            train_number = train_type + step[2]
+                            rail_info = ['台鐵', GetTicketPrice.Railway(start, end, train_number)]
+                except KeyError:
+                    train_type = '普悠瑪'
+                    train_number = train_type + step[2]
+                    rail_info = ['台鐵', GetTicketPrice.Railway(start, end, train_number)]
+                leg_info.append(rail_info)
     route_info.append(leg_info)
 
 print(route_info)
