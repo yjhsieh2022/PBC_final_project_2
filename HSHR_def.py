@@ -111,12 +111,14 @@ def HSHR(StartStation, EndStation, DepartureDate, DepartureTime, TrainNumber):
     Business = data['data']['PriceTable']['Business']
     Unreserved = data['data']['PriceTable']['Unreserved']
     
-    FullPrice = {'標準車廂':Coach[0],'商務車廂':Business[0],'自由座':Unreserved[0]}
-    ChildPrice = {'標準車廂':Coach[1],'商務車廂':Business[1],'自由座':Unreserved[1]}
+    FullPrice = {'標準車廂':int(Coach[0][1:]),'商務車廂':int(Business[0][1:]),'自由座':int(Unreserved[0][1:])}
+    ChildPrice = {'標準車廂':int(Coach[1][1:]),'商務車廂':int(Business[1][1:]),'自由座':int(Unreserved[1][1:])}
+
+ 
     """團體票先註解掉
-    GroupPrice = {'標準車廂':Coach[2],'商務車廂':Business[2]}  
-    """
+    GroupPrice = {'標準車廂':int(Coach[2][1:]),'商務車廂':int(Business[2][1:])}  
     ColledgePrice = []
+    """
     
     # 將65折起等不確定的折數差成數個準確可對應的折數
     earlybird = {'65折起':['65折','8折','9折'], '8折起':['8折','9折']}
@@ -135,37 +137,37 @@ def HSHR(StartStation, EndStation, DepartureDate, DepartureTime, TrainNumber):
         for values in TrainDiscount['早鳥']: 
             for Column in data['data']['PriceTable']['Column']:
                 if Column['ColumnName'] == values:
-                    FullPrice['早鳥'+Column['ColumnName']] = Column['CoachPrice']                    
+                    FullPrice['早鳥'+Column['ColumnName']] = int(Column['CoachPrice'][1:])                    
     if '大學生' in TrainDiscount.keys():
         for values in TrainDiscount['大學生']: 
             for Column in data['data']['PriceTable']['Column']:
                 if Column['ColumnName'] == values:
-                    ColledgePrice = ['大學生'+Column['ColumnName'], Column['CoachPrice']]
+                    FullPrice['大學生'+Column['ColumnName']] = int(Column['CoachPrice'][1:])
     """
     if '25人團體' in TrainDiscount.keys():            
         for values in TrainDiscount['25人團體']: 
             for Column in data['data']['PriceTable']['Column']:
                 if Column['ColumnName'] == values:
-                    GroupPrice['25人團體'+Column['ColumnName']] = Column['CoachPrice']
+                    GroupPrice['25人團體'+Column['ColumnName']] = int(Column['CoachPrice'][1:])
     if '校外教學' in TrainDiscount.keys():
         for values in TrainDiscount['校外教學']:
             for Column in data['data']['PriceTable']['Column']:
                 if Column['ColumnName'] == values:
                     if values == '4折':
-                        GroupPrice['小學生校外教學4折'] = Column['CoachPrice']
+                        GroupPrice['小學生校外教學4折'] = int(Column['CoachPrice'][1:])
                     elif values == '7折':
-                        GroupPrice['中學、大學生校外教學7折'] = Column['CoachPrice']
+                        GroupPrice['中學、大學生校外教學7折'] = int(Column['CoachPrice'][1:])
     """
     Result = [  ['全票',FullPrice, 'https://irs.thsrc.com.tw/IMINT/'], 
                 ['孩童票/敬老票/愛心票', ChildPrice, 'https://irs.thsrc.com.tw/IMINT/'], 
                 #['11人以上團體票', GroupPrice, 'https://grp.thsrc.com.tw/tkcs_b2c/home/list?cp2Token=NAHF-0JF2-IL9D-EPGU-5YJJ-YYB7-F17X-EWQ1']
                 ]
-    
+    """
     # 高鐵票價查詢若勾選全部優惠，有些沒有優惠的車次就不會跳出，造成Google Map 傳來的車次(沒有優惠)找不到，這些沒有優惠的車次在後台數據裡，data['data']['DepartureTable']['TrainItem']['Discount']為空，自然也找不到'早鳥','大學生','25人優惠'等字眼，若在最後直接跳出一個ColledgePrice，會跳出UndefinedError，所以要先檢查TrainDiscount是否為空
     # 大學生優惠是單獨的一類，其他優惠都是放在全票或團體票中，就算沒有優惠字典也不會是空的，但若沒有大學生優惠，會印出一個空的字典，因此要特別檢查: len(ColledgePrice) == 0?
     if len(TrainDiscount.keys()) != 0 and len(ColledgePrice) != 0:            
         Result.append([ColledgePrice[0], ColledgePrice[1], 'https://irs.thsrc.com.tw/IMINT/'])
-
+    """
     return Result
 
 print(HSHR('高鐵台中站','新左營站','2020/01/01','下午12:17','821'))
