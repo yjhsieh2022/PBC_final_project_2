@@ -1,29 +1,29 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Price_display</title>
+    <title>detail_display</title>
 </head>
 <body>
     <table width ="100%" style ="table-layout:fixed;word-break:break-all;background:#f2f2f2">
         <tr>
             <td width ="10%">
-                松山車站<br>
+                {{station[0]}}<br>
                 &emsp;&emsp;|<br>
                 &emsp;&emsp;|<br>
                 &emsp;&emsp;|<br>
-                板橋車站<br>
+                {{station[1]}}<br>
                 <br>
             </td>
             <td width ="30%">
-                下午12:13 <br>
+                {{time[0]}} <br>
                 <br>
-                復興/區間 1177<br>
+                {{carnumber[0]}}<br>
                 <br>
-                下午12:31<br>
+                {{time[1]}}<br>
                 <br>
             </td>
             <td width ="30%">
-                $
+                {{pricelist[0]}}
             </td>
             <td width ="30%">
                 <a target = "_blank" href="https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query">
@@ -36,26 +36,54 @@
         <tr>
             <td width ="10%">
                 <br>
-                板橋車站<br>
+                {{station[2]}}<br>
                 &emsp;&emsp;| <br>
                 &emsp;&emsp;| <br>
                 &emsp;&emsp;| <br>
-                新左營站<br>
+                {{station[3]}}<br>
             </td>
             <td width ="30%">
                 <br>
-                下午12:33<br>
+                {{time[2]}}<br>
                 <br>
-                高鐵129<br>
+                {{carnumber[1]}}<br>
                 <br>
-                下午2:05<br>
+                {{time[3]}}<br>
             </td>
             <td width ="30%">
-                $
+                {{pricelist[1]}}
             </td>
             <td width ="30%">
                 <a target = "_blank" href="https://irs.thsrc.com.tw/IMINT/">
                     <input type=button value = "高鐵訂票去!" onclick="window.open.href('https://irs.thsrc.com.tw/IMINT/')">
+                </a>
+            </td>
+        </tr>
+    </table>
+    <table width ="100%" style ="table-layout:fixed;word-break:break-all;background:#f2f2f2">
+        <tr>
+            <td width ="10%">
+                <br>
+                {{station[4]}}<br>
+                &emsp;&emsp;| <br>
+                &emsp;&emsp;| <br>
+                &emsp;&emsp;| <br>
+                {{station[5]}}<br>
+            </td>
+            <td width ="30%">
+                <br>
+                {{time[4]}}<br>
+                <br>
+                {{carnumber[2]}}<br>
+                <br>
+                {{time[5]}}<br>
+            </td>
+            <td width ="30%">
+                {{pricelist[2]}}
+            </td>
+            <td width ="30%">
+                <a target = "_blank" href="https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query">
+                    <input type=button value = "台鐵訂票去!" onclick="window.open.href('https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query')">
                 </a>
             </td>
         </tr>
