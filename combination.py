@@ -186,7 +186,7 @@ class GetTicketPrice:
     #print(get_bus_price('1062', '61', '0'))
 
     def HSHR(StartStation, EndStation, DepartureDate, DepartureTime, TrainNumber):
-        
+    
         # google map上的站名和高鐵網站搜尋名不一致
         NameMatch = {   '南港車站':'南港站', 
                         '台北車站':'台北站', 
@@ -286,10 +286,12 @@ class GetTicketPrice:
         Business = data['data']['PriceTable']['Business']
         Unreserved = data['data']['PriceTable']['Unreserved']
         
-        FullPrice = {'標準車廂':Coach[0],'商務車廂':Business[0],'自由座':Unreserved[0]}
-        ChildPrice = {'標準車廂':Coach[1],'商務車廂':Business[1],'自由座':Unreserved[1]}
+        FullPrice = {'標準車廂':int(Coach[0][1:]),'商務車廂':int(Business[0][1:]),'自由座':int(Unreserved[0][1:])}
+        ChildPrice = {'標準車廂':int(Coach[1][1:]),'商務車廂':int(Business[1][1:]),'自由座':int(Unreserved[1][1:])}
+
+     
         """團體票先註解掉
-        GroupPrice = {'標準車廂':Coach[2],'商務車廂':Business[2]}  
+        GroupPrice = {'標準車廂':int(Coach[2][1:]),'商務車廂':int(Business[2][1:])}  
         ColledgePrice = []
         """
         
@@ -310,26 +312,26 @@ class GetTicketPrice:
             for values in TrainDiscount['早鳥']: 
                 for Column in data['data']['PriceTable']['Column']:
                     if Column['ColumnName'] == values:
-                        FullPrice['早鳥'+Column['ColumnName']] = Column['CoachPrice']                    
+                        FullPrice['早鳥'+Column['ColumnName']] = int(Column['CoachPrice'][1:])                    
         if '大學生' in TrainDiscount.keys():
             for values in TrainDiscount['大學生']: 
                 for Column in data['data']['PriceTable']['Column']:
                     if Column['ColumnName'] == values:
-                        FullPrice ['大學生'+Column['ColumnName']] = Column['CoachPrice']
+                        FullPrice['大學生'+Column['ColumnName']] = int(Column['CoachPrice'][1:])
         """
         if '25人團體' in TrainDiscount.keys():            
             for values in TrainDiscount['25人團體']: 
                 for Column in data['data']['PriceTable']['Column']:
                     if Column['ColumnName'] == values:
-                        GroupPrice['25人團體'+Column['ColumnName']] = Column['CoachPrice']
+                        GroupPrice['25人團體'+Column['ColumnName']] = int(Column['CoachPrice'][1:])
         if '校外教學' in TrainDiscount.keys():
             for values in TrainDiscount['校外教學']:
                 for Column in data['data']['PriceTable']['Column']:
                     if Column['ColumnName'] == values:
                         if values == '4折':
-                            GroupPrice['小學生校外教學4折'] = Column['CoachPrice']
+                            GroupPrice['小學生校外教學4折'] = int(Column['CoachPrice'][1:])
                         elif values == '7折':
-                            GroupPrice['中學、大學生校外教學7折'] = Column['CoachPrice']
+                            GroupPrice['中學、大學生校外教學7折'] = int(Column['CoachPrice'][1:])
         """
         Result = [  ['全票',FullPrice, 'https://irs.thsrc.com.tw/IMINT/'], 
                     ['孩童票/敬老票/愛心票', ChildPrice, 'https://irs.thsrc.com.tw/IMINT/'], 
@@ -341,8 +343,7 @@ class GetTicketPrice:
         if len(TrainDiscount.keys()) != 0 and len(ColledgePrice) != 0:            
             Result.append([ColledgePrice[0], ColledgePrice[1], 'https://irs.thsrc.com.tw/IMINT/'])
         """
-
-        return Result
+        return Result   
 
     # print(HSHR('高鐵台中站','新左營站','2020/01/01','12:17','821'))
 
