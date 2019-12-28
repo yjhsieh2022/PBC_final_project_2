@@ -10,9 +10,16 @@ def home():
 
 @taiwango.route('/routechoices/<startpoint>/<destination>/<date>/<startTime>/<ticket>', methods=['GET', 'POST'])  # 婉如，各路線選擇
 def routechoices(startpoint, destination, date, startTime, ticket):
-    event = [startpoint, destination, int(date[:4]), int(date[5:7]), int(date[8:10]), int(startTime[:2]), int(startTime[4:])]
-    API_Result = GoogleAPI.get_transport_info(event)
-     #佳妤
+    year = int(date[:4])
+    month = int(date[5:7])
+    day = int(date[8:10])
+    hour = int(startTime[:2])
+    minutes = int(startTime[4:])
+
+    from combination import GoogleAPI
+    get_API = GoogleAPI()
+    API_Result = get_API.get_transport_info(startpoint, destination, year, month, day, hour, minutes)
+    #佳妤
     # routes_num = count(API_Result)
     # r1_trans_num = count(API_Result[0])
     # r2_trans_num = count(API_Result[1])
