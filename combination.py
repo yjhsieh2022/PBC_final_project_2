@@ -13,7 +13,7 @@ class GoogleAPI:
     def get_bus_full_price(origin, destination, year, month, day, hour, minutes):
         try:
             endpoint = 'https://maps.googleapis.com/maps/api/directions/json?'
-            api_key = 'AIzaSyBWzsLj0BrvJ_05uu7MAJZ-A93NOp_U970'
+            api_key = ''
 
             dep_time = datetime.datetime(year, month, day, hour, minutes)
             dep_time = convert.time(dep_time)
