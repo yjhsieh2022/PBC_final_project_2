@@ -5,16 +5,14 @@ taiwango = Flask(__name__)
 @taiwango.route('/', methods=['GET', 'POST'])  # 佳妤，taiwango 首頁
 def home():
     if request.method == 'POST':
-        return redirect(url_for('routechoices')) + request.values['startpoint'] + request.values['destination'] + request.values['date'] + request.values["startTime"] + request.values['ticket']
-
+        return redirect(url_for('routechoices', startpoint = request.form.get('startpoint'), destination = request.form.get('destination'), date = request.form.get('date'), startTime = request.form.get('startTime'), ticket = request.form.get('ticket')))
     return render_template('web_page1.html')
 
-
-@taiwango.route('/routechoices', methods=['GET', 'POST'])  # 婉如，各路線選擇
-def routechoices():
-    """ 佳妤
-    API_Result = GoogleAPI.get_transport_info('北投', '九份', 2019, 12, 20, 11, 30)
-    """
+@taiwango.route('/routechoices/<startpoint>/<destination>/<date>/<startTime>/<ticket>', methods=['GET', 'POST'])  # 婉如，各路線選擇
+def routechoices(startpoint, destination, date, startTime, ticket):
+    event = [startpoint, destination, int(date[:4]), int(date[5:7]), int(date[8:10]), int(startTime[:2]), int(startTime[4:])]
+    API_Result = GoogleAPI.get_transport_info(event)
+     #佳妤
     # routes_num = count(API_Result)
     # r1_trans_num = count(API_Result[0])
     # r2_trans_num = count(API_Result[1])
