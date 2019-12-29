@@ -3,7 +3,6 @@ from selenium import webdriver
 from bs4 import BeautifulSoup
 from selenium.webdriver.common.keys import Keys
 
-
 '''建立站名和車站代碼的字典'''
 url = "https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip111/view"
 r = requests.get(url)
@@ -32,17 +31,14 @@ for i in range(len(train_code_list)):
 Name2NameCode = {}
 for i in range(len(train_code_list)):
     Name2NameCode[train_name_list[i]] = NameCode[i]
+Name2NameCode['新烏日火車站'] = '新烏日'
 '''input起訖點和車次'''
 start = input()
 if '台' in start:
     start = start.replace('台','臺')
-if start == "新烏日火車站":
-    start = "新烏日車站"
 end = input()
 if '台' in end:
     end = end.replace('台','臺')
-if end == "新烏日火車站":
-    end = "新烏日車站"
 start = Name2NameCode[start]
 end = Name2NameCode[end]
 train_number = input()
@@ -59,13 +55,12 @@ def train_price(start, end, train_number):
 
     endpoint = driver.find_element_by_name("endStation")
     endpoint.send_keys(end)
+    endpoint.send_keys(Keys.ENTER)
 
-    confirm_button = driver.find_element_by_name("query")
-    confirm_button.click()
+    #confirm_button = driver.find_element_by_name("query")
+    #confirm_button.click()
     
     html = driver.page_source
-
-    
     soup = BeautifulSoup(html, 'html.parser')
 
     '''找車次'''
@@ -73,7 +68,14 @@ def train_price(start, end, train_number):
     train_number_list = []
     train_number_tags = soup.find_all("a", attrs = attr)
     for tag in train_number_tags:
-        train_number_list.append(tag.get_text())
+        train = tag.get_text()
+        numbers = ['0','1','2','3','4','5','6','7','8','9']
+        num = str()
+        for ch in train:
+            if ch in numbers:
+                num += ch
+        train_number_list.append(int(num))
+
 
     '''找票價'''
     price_tags =soup.find_all("td")
@@ -110,7 +112,7 @@ def train_price(start, end, train_number):
     return adult, kid
     
 '''根據車次尋找對應的票價資訊'''
-event = train_price(start, end, train_number)
+event = train_price(start, end, int(train_number))
 print(event)
 
     
