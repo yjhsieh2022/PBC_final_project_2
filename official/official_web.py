@@ -1,4 +1,5 @@
 from flask import Flask, request, render_template, redirect, url_for
+import combination
 
 taiwango = Flask(__name__)
 
@@ -16,9 +17,9 @@ def routechoices(startpoint, destination, date, startTime, ticket):
     hour = int(startTime[:2])
     minutes = int(startTime[4:])
 
-    from combination import GoogleAPI
-    get_API = GoogleAPI()
-    API_Result = get_API.get_transport_info(startpoint, destination, year, month, day, hour, minutes)
+    API_Result = combination.GoogleAPI.get_transport_info(startpoint, destination, year, month, day, hour, minutes)
+    route_info = combination.GetTicketPrice.total_price_list(API_Result)
+
     #佳妤
     # routes_num = count(API_Result)
     # r1_trans_num = count(API_Result[0])
