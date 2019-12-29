@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, redirect, url_for
-import combination
+from combination import GoogleAPI
+from combination import GetTicketPrice
 
 taiwango = Flask(__name__)
 
@@ -15,19 +16,19 @@ def routechoices(startpoint, destination, date, startTime, ticket):
     month = int(date[5:7])
     day = int(date[8:10])
     hour = int(startTime[:2])
-    minutes = int(startTime[4:])
-
-    API_Result = combination.GoogleAPI.get_transport_info(startpoint, destination, year, month, day, hour, minutes)
-    route_info = combination.GetTicketPrice.total_price_list(API_Result)
-
-    #佳妤
-    # routes_num = count(API_Result)
+    minutes = int(startTime[3:])
+    
+    API_Result = GoogleAPI.get_transport_info(startpoint, destination, year, month, day, hour, minutes)
+    Price = GetTicketPrice.total_price_list(API_Result)
+    routes_num = len(API_Result)
+    if routes_num == 0:
+        return render_template('web_page2_one.html', API_Result = API_Result, Price = Price, routes_num = routes_num)
     # r1_trans_num = count(API_Result[0])
     # r2_trans_num = count(API_Result[1])
     # r3_trans_num = count(API_Result[2])
     # r4_trans_num = count(API_Result[3])
 
-    routes_num = 1  # 之後合併要改成連結API的結果
+    '''routes_num = 1  # 之後合併要改成連結API的結果
     r1_trans_num = 1
     r2_trans_num = 1
     r3_trans_num = 1
@@ -48,7 +49,7 @@ def routechoices(startpoint, destination, date, startTime, ticket):
     elif routes_num == 3:
         return render_template('web_page2_three.html')
     elif routes_num == 4:
-        return render_template('web_page2_four.html')
+        return render_template('web_page2_four.html')'''
 
 
 
