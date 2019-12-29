@@ -48,7 +48,7 @@ def hyperlink(Price):
         link = []
         for vehicle in route:
             if vehicle[0] == '客運':
-                link.append('客運尚無線上訂票系統')
+                link.append('尚無線上訂票系統')
             elif vehicle[0] == '台鐵':
                 link.append('https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query')
             elif vehicle[0] == '高鐵':
