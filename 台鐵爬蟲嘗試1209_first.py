@@ -31,7 +31,7 @@ for i in range(len(train_code_list)):
 Name2NameCode = {}
 for i in range(len(train_code_list)):
     Name2NameCode[train_name_list[i]] = NameCode[i]
-Name2NameCode['新烏日火車站'] = '新烏日'
+#Name2NameCode['新烏日火車站'] = '新烏日'
 '''input起訖點和車次'''
 start = input()
 if '台' in start:
@@ -39,6 +39,8 @@ if '台' in start:
 end = input()
 if '台' in end:
     end = end.replace('台','臺')
+if end == '新烏日火車站':
+    end = '新烏日車站'
 start = Name2NameCode[start]
 end = Name2NameCode[end]
 train_number = input()
@@ -77,6 +79,7 @@ def train_price(start, end, train_number):
         train_number_list.append(int(num))
 
 
+
     '''找票價'''
     price_tags =soup.find_all("td")
 
@@ -87,6 +90,7 @@ def train_price(start, end, train_number):
         index_dollar = t.find("$")
         if index_dollar >= 0:
             price_str = t[index_dollar:]
+            price_str = price_str.replace(',','')
             price_list.append(int(price_str[2:]))
 
     adult_price_list = []
@@ -96,7 +100,7 @@ def train_price(start, end, train_number):
             adult_price_list.append(price_list[i])
         if i % 2 == 1:
             kid_price_list.append(price_list[i])
-    driver.close()
+    #driver.close()
     all_price_list = list(zip(adult_price_list, kid_price_list))
     
     '''建立車次對票價的字典'''
