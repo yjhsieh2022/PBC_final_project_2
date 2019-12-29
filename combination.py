@@ -407,7 +407,7 @@ class GetTicketPrice:
 
         '''建立車次對票價的字典'''
         number2price = dict(zip(train_number_list, all_price_list))
-        print(number2price)
+        # print(number2price)
 
         url = 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'
         #台鐵車票是在取票時才決訂票的種類，付款時再指定票種即可，故網址相同
@@ -528,7 +528,7 @@ for leg in api_output_list:
                 start = Name2NameCode[start]
                 end = Name2NameCode[end]
                 train_number = int(step[2])
-                print(start, end, train_number)
+                #print(start, end, train_number)
                 rail_info = ['台鐵', GetTicketPrice.Railway(start, end, train_number)]
                 '''
                 try:
