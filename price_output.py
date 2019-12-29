@@ -20,9 +20,9 @@ Price = [[['客運', None],['台鐵', (['全票', 308, 'https://www.railway.gov.
 tickettype = '全票'
 
 # 將各條路線的價格擷取出來，放入pricelist
-def pricelist(tickettype, Price):
+def pricelist(ticket, Price):
     pricelist = []
-    if tickettype == '全票':
+    if ticket == 0:
         for routes in Price:
             RoutePrice = []
             for vehicle in routes:
@@ -31,7 +31,7 @@ def pricelist(tickettype, Price):
                 else:
                     RoutePrice.append('市內公車票價依各縣市不同')
             pricelist.append(RoutePrice)
-    if tickettype == '優惠票':
+    if ticket == 1:
         for routes in Price:
             RoutePrice = []
             for vehicle in routes:
