@@ -151,6 +151,8 @@ class GetTicketPrice:
             for tag in price_tags:
                 price_list.append(tag.get_text())
 
+            driver_price_page.close()  # 先不關
+
             price_len = len(price_list)//2  # 將全票半票資訊分開
             full_price_list = price_list[:price_len]
             half_price_list = price_list[price_len:]
@@ -418,6 +420,111 @@ class GetTicketPrice:
         #50人以上需要事先申請
         return adult, kid
 
+    def total_price_list(a_list):
+        route_info = []
+        for leg in a_list:
+            leg_info = []
+            for step in leg:
+                if step[0] == 'BUS' and len(step[1]) == 4:
+                    num_route = step[1]
+                    try:
+                        full_ticket_price = step[8][1:].split('.')
+                        full_ticket_price = full_ticket_price[0]
+                        bus_info = ['客運', GetTicketPrice.Bus(num_route, full_ticket_price)]
+                    except:
+                        bus_info = ['客運', None]
+                    leg_info.append(bus_info)
+                    #print(step)
+                elif step[0] == 'HEAVY_RAIL':
+                    if step[1] == '高鐵':
+                        StartStation = step[3]
+                        EndStation = step[4]
+                        DepartureDate = step[5]
+                        DepartureTime = step[6]
+                        TrainNumber = step[2]
+                        hsr_info = ['高鐵', GetTicketPrice.HSHR(StartStation, EndStation, DepartureDate, DepartureTime, TrainNumber)]
+                        leg_info.append(hsr_info)
+                    else:  # 台鐵
+                        '''建立站名和車站代碼的字典'''
+                        url = "https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip111/view"
+                        r = requests.get(url)
+                        soup = BeautifulSoup(r.text, 'html.parser')
+
+                        attr = {"class":"traincode_code1"}
+                        train_code_list = []
+                        train_code_tags = soup.find_all("div", attrs = attr)
+                        for tag in train_code_tags:
+                            train_code_list.append(tag.get_text())
+
+                        attr = {"class":"traincode_name1"}
+                        train_name_list = []
+                        train_name_without_station = []
+                        train_name_tags = soup.find_all("div", attrs = attr)
+
+                        for tag in train_name_tags:
+                            StationName = tag.get_text()
+                            train_name_list.append(StationName + "車站")
+                            train_name_without_station.append(StationName)
+
+                        NameCode = []
+                        for i in range(len(train_code_list)):
+                            NameCode.append(train_code_list[i] + '-' + train_name_without_station[i])
+
+                        Name2NameCode = {}
+                        for i in range(len(train_code_list)):
+                            Name2NameCode[train_name_list[i]] = NameCode[i]
+                        '''input起訖點和車次'''
+                        Rail_stop = ['基隆', '三坑', '八堵', '七堵', '百福', '五堵', '汐止',
+                        '汐科', '南港', '松山', '臺北', '萬華', '板橋', '浮洲', '樹林', '南樹林',
+                        '山佳', '鶯歌', '桃園', '內壢', '中壢', '埔心', '楊梅', '富岡', '新富',
+                        '北湖', '湖口', '新豐', '竹北', '北新竹', '新竹', '三姓橋', '香山',
+                        '崎頂', '竹南', '造橋', '豐富', '苗栗', '南勢', '銅鑼', '三義', '泰安',
+                        '后里', '豐原', '栗林', '潭子', '頭家厝', '松竹', '太原', '精武', '臺中',
+                        '五權', '大慶', '烏日', '新烏日', '成功', '彰化', '花壇', '大村', '員林',
+                        '永靖', '社頭', '田中', '二水', '林內', '石榴', '斗六', '斗南', '石龜',
+                        '大林', '民雄', '嘉北', '嘉義', '水上', '南靖', '後壁', '新營', '柳營',
+                        '林鳳營', '隆田', '拔林', '善化', '南科', '新市', '永康', '大橋', '臺南',
+                        '林森', '南臺南', '保安', '仁德', '中洲', '大湖', '路竹', '岡山', '橋頭',
+                        '楠梓', '新左營', '左營', '內惟', '美術館', '鼓山', '三塊厝', '高雄',
+                        '民族', '科工館', '正義', '鳳山', '後庄', '九曲堂', '六塊厝', '屏東',
+                        '談文', '大山', '後龍', '龍港', '白沙屯', '新埔', '通霄', '苑裡', '日南',
+                        '大甲', '臺中港', '清水', '沙鹿', '龍井', '大肚', '追分', '暖暖',
+                        '四腳亭', '瑞芳', '猴硐', '三貂嶺', '牡丹', '雙溪', '貢寮', '福隆',
+                        '石城', '大里', '大溪', '龜山', '外澳', '頭城', '頂埔', '礁溪', '四城',
+                        '宜蘭', '二結', '中里', '羅東', '冬山', '新馬', '蘇澳新站', '蘇澳',
+                        '永樂', '東澳', '南澳', '武塔', '漢本', '和平', '和仁', '崇德', '新城',
+                        '景美', '北埔', '花蓮', '吉安', '志學', '平和', '壽豐', '豐田',
+                        '林榮新光', '南平', '鳳林', '萬榮', '光復', '大富', '富源', '瑞穗',
+                        '三民', '玉里', '東里', '東竹', '富里', '池上', '海端', '關山', '瑞和',
+                        ' 瑞源', '鹿野', '山里', '臺東', '歸來', '麟洛', '西勢', '竹田', '潮州',
+                        '崁頂', '南州', '鎮安', '林邊', '佳冬', '東海', '枋寮', '加祿', '內獅',
+                        '枋山', '大武', '瀧溪', '金崙', '太麻里', '知本', '康樂', '大華', '十分',
+                        '望古', '嶺腳', '平溪', '菁桐', '千甲', '新莊', '竹中', '上員', '榮華',
+                        '竹東', '橫山', '九讚頭', '合興', '富貴', '內灣', '源泉', '濁水', '龍泉',
+                        '集集', '水里', '車埕', '長榮大學', '沙崙', '六家', '海科館', '八斗子']
+                        start = step[3]
+                        if '台' in start:
+                            start = start.replace('台','臺')
+                        for stop in Rail_stop:
+                            if stop in start:
+                                start = stop + '車站'
+                        end = step[4]
+                        if '台' in end:
+                            end = end.replace('台','臺')
+                        for stop in Rail_stop:
+                            if stop in end:
+                                end = stop + '車站'
+                        # print(start, end)
+                        start = Name2NameCode[start]
+                        end = Name2NameCode[end]
+                        train_number = int(step[2])
+                        #print(start, end, train_number)
+                        rail_info = ['台鐵', GetTicketPrice.Railway(start, end, train_number)]
+
+                        leg_info.append(rail_info)
+            route_info.append(leg_info)
+        return route_info
+
 '''Input'''
 DEP_LOCATION = input('起點:')
 ARV_LOCATION = input('終點:')
@@ -429,141 +536,5 @@ MINUTE = int(input('分鐘:'))
 api_output_list = GoogleAPI.get_transport_info(DEP_LOCATION, ARV_LOCATION, YEAR, MONTH, DAY, HOUR, MINUTE)
 api_output_list = api_output_list[:4]
 print(api_output_list)
-
-route_info = []
-for leg in api_output_list:
-    leg_info = []
-    for step in leg:
-        if step[0] == 'BUS' and len(step[1]) == 4:
-            num_route = step[1]
-            try:
-                full_ticket_price = step[8][1:].split('.')
-                full_ticket_price = full_ticket_price[0]
-                bus_info = ['客運', GetTicketPrice.Bus(num_route, full_ticket_price)]
-            except:
-                bus_info = ['客運', None]
-            leg_info.append(bus_info)
-            #print(step)
-        elif step[0] == 'HEAVY_RAIL':
-            if step[1] == '高鐵':
-                StartStation = step[3]
-                EndStation = step[4]
-                DepartureDate = step[5]
-                DepartureTime = step[6]
-                TrainNumber = step[2]
-                hsr_info = ['高鐵', GetTicketPrice.HSHR(StartStation, EndStation, DepartureDate, DepartureTime, TrainNumber)]
-                leg_info.append(hsr_info)
-            else:  # 台鐵
-                #try:
-                '''建立站名和車站代碼的字典'''
-                url = "https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip111/view"
-                r = requests.get(url)
-                soup = BeautifulSoup(r.text, 'html.parser')
-
-                attr = {"class":"traincode_code1"}
-                train_code_list = []
-                train_code_tags = soup.find_all("div", attrs = attr)
-                for tag in train_code_tags:
-                    train_code_list.append(tag.get_text())
-
-                attr = {"class":"traincode_name1"}
-                train_name_list = []
-                train_name_without_station = []
-                train_name_tags = soup.find_all("div", attrs = attr)
-
-                for tag in train_name_tags:
-                    StationName = tag.get_text()
-                    train_name_list.append(StationName + "車站")
-                    train_name_without_station.append(StationName)
-
-                NameCode = []
-                for i in range(len(train_code_list)):
-                    NameCode.append(train_code_list[i] + '-' + train_name_without_station[i])
-
-                Name2NameCode = {}
-                for i in range(len(train_code_list)):
-                    Name2NameCode[train_name_list[i]] = NameCode[i]
-                '''input起訖點和車次'''
-                Rail_stop = ['基隆', '三坑', '八堵', '七堵', '百福', '五堵', '汐止',
-                '汐科', '南港', '松山', '臺北', '萬華', '板橋', '浮洲', '樹林', '南樹林',
-                '山佳', '鶯歌', '桃園', '內壢', '中壢', '埔心', '楊梅', '富岡', '新富',
-                '北湖', '湖口', '新豐', '竹北', '北新竹', '新竹', '三姓橋', '香山',
-                '崎頂', '竹南', '造橋', '豐富', '苗栗', '南勢', '銅鑼', '三義', '泰安',
-                '后里', '豐原', '栗林', '潭子', '頭家厝', '松竹', '太原', '精武', '臺中',
-                '五權', '大慶', '烏日', '新烏日', '成功', '彰化', '花壇', '大村', '員林',
-                '永靖', '社頭', '田中', '二水', '林內', '石榴', '斗六', '斗南', '石龜',
-                '大林', '民雄', '嘉北', '嘉義', '水上', '南靖', '後壁', '新營', '柳營',
-                '林鳳營', '隆田', '拔林', '善化', '南科', '新市', '永康', '大橋', '臺南',
-                '林森', '南臺南', '保安', '仁德', '中洲', '大湖', '路竹', '岡山', '橋頭',
-                '楠梓', '新左營', '左營', '內惟', '美術館', '鼓山', '三塊厝', '高雄',
-                '民族', '科工館', '正義', '鳳山', '後庄', '九曲堂', '六塊厝', '屏東',
-                '談文', '大山', '後龍', '龍港', '白沙屯', '新埔', '通霄', '苑裡', '日南',
-                '大甲', '臺中港', '清水', '沙鹿', '龍井', '大肚', '追分', '暖暖',
-                '四腳亭', '瑞芳', '猴硐', '三貂嶺', '牡丹', '雙溪', '貢寮', '福隆',
-                '石城', '大里', '大溪', '龜山', '外澳', '頭城', '頂埔', '礁溪', '四城',
-                '宜蘭', '二結', '中里', '羅東', '冬山', '新馬', '蘇澳新站', '蘇澳',
-                '永樂', '東澳', '南澳', '武塔', '漢本', '和平', '和仁', '崇德', '新城',
-                '景美', '北埔', '花蓮', '吉安', '志學', '平和', '壽豐', '豐田',
-                '林榮新光', '南平', '鳳林', '萬榮', '光復', '大富', '富源', '瑞穗',
-                '三民', '玉里', '東里', '東竹', '富里', '池上', '海端', '關山', '瑞和',
-                ' 瑞源', '鹿野', '山里', '臺東', '歸來', '麟洛', '西勢', '竹田', '潮州',
-                '崁頂', '南州', '鎮安', '林邊', '佳冬', '東海', '枋寮', '加祿', '內獅',
-                '枋山', '大武', '瀧溪', '金崙', '太麻里', '知本', '康樂', '大華', '十分',
-                '望古', '嶺腳', '平溪', '菁桐', '千甲', '新莊', '竹中', '上員', '榮華',
-                '竹東', '橫山', '九讚頭', '合興', '富貴', '內灣', '源泉', '濁水', '龍泉',
-                '集集', '水里', '車埕', '長榮大學', '沙崙', '六家', '海科館', '八斗子']
-                start = step[3]
-                if '台' in start:
-                    start = start.replace('台','臺')
-                for stop in Rail_stop:
-                    if stop in start:
-                        start = stop + '車站'
-                end = step[4]
-                if '台' in end:
-                    end = end.replace('台','臺')
-                for stop in Rail_stop:
-                    if stop in end:
-                        end = stop + '車站'
-                # print(start, end)
-                start = Name2NameCode[start]
-                end = Name2NameCode[end]
-                train_number = int(step[2])
-                #print(start, end, train_number)
-                rail_info = ['台鐵', GetTicketPrice.Railway(start, end, train_number)]
-                '''
-                try:
-                    train_type = step[1]
-                    if ord(train_type[-1:]) == 34399:
-                        train_type = train_type[:-1]
-                        train_number = train_type + step[2]
-                        print(start, end, train_number)
-                        rail_info = ['台鐵', GetTicketPrice.Railway(start, end, train_number)]
-                    elif train_type == '復興/區間':
-                        try:
-                            train_type = '區間'
-                            train_number = train_type + step[2]
-                            print(start, end, train_number)
-                            rail_info = ['台鐵', GetTicketPrice.Railway(start, end, train_number)]
-                        except KeyError:
-                            train_type = '區間快'
-                            train_number = train_type + step[2]
-                            print(start, end, train_number)
-                            rail_info = ['台鐵', GetTicketPrice.Railway(start, end, train_number)]
-                except KeyError:
-                    try:
-                        train_type = '普悠瑪'
-                        train_number = train_type + step[2]
-                        print(start, end, train_number)
-                        rail_info = ['台鐵', GetTicketPrice.Railway(start, end, train_number)]
-                    except KeyError:
-                        train_type = '太魯閣'
-                        train_number = train_type + step[2]
-                        print(start, end, train_number)
-                        rail_info = ['台鐵', GetTicketPrice.Railway(start, end, train_number)]
-                '''
-                #except:
-                    #rail_info = ['台鐵', '被擋爬蟲囉~再跑一次']
-                leg_info.append(rail_info)
-    route_info.append(leg_info)
-
+route_info = GetTicketPrice.total_price_list(api_output_list)
 print(route_info)
