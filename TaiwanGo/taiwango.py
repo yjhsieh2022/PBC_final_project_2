@@ -24,7 +24,7 @@ def routechoices(startpoint, destination, date, startTime, ticket):
     Price = GetTicketPrice.total_price_list(API_Result)
     routes_num = len(API_Result)
     if routes_num == 0:
-        return render_template('test.html', API_Result = API_Result, Price = Price, routes_num = routes_num)
+        return render_template('web_page1.html', API_Result = API_Result, Price = Price, routes_num = routes_num)
 
 """
 @taiwango.route('/', methods=['GET', 'POST'])  # 佳妤，taiwango 首頁
