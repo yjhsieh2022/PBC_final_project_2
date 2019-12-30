@@ -138,7 +138,7 @@ class GetTicketPrice:
 
             '''填入代號連到價格頁面'''
             url_price_page = 'https://web.taiwanbus.tw/eBUS/subsystem/ticket/TMSquery.aspx?run_id=' + str(R_Route[4])  # 這裡是採用去程:R[4]；如果回程:R[9]
-            driver_price_page = webdriver.Chrome(executable_path ='C:\\Users\\Hsiao Wan-Ju\\Downloads\\chromedriver.exe')
+            driver_price_page = webdriver.Chrome(executable_path ='C:\\Users\\User\\Desktop\\course in NTU\\選修\\商管程式設計\\chromedriver.exe')
             driver_price_page.get(url_price_page)
 
             html_price_page = driver_price_page.page_source
@@ -353,7 +353,7 @@ class GetTicketPrice:
 
     # print(HSHR('高鐵台中站','新左營站','2020/01/01','12:17','821'))
     def Railway(start, end, train_number):
-        driver = webdriver.Chrome(executable_path ='C:\\Users\\Hsiao Wan-Ju\\Downloads\\chromedriver.exe')
+        driver = webdriver.Chrome(executable_path ='C:\\Users\\User\\Desktop\\course in NTU\\選修\\商管程式設計\\chromedriver.exe')
         driver.get("https://tip.railway.gov.tw/tra-tip-web/tip/tip001/tip112/gobytime")
         #前往台鐵車次與票價搜尋頁面
         startpoint = driver.find_element_by_name("startStation")

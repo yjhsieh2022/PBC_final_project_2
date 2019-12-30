@@ -23,8 +23,12 @@ def routechoices(startpoint, destination, date, startTime, ticket):
     API_Result = GoogleAPI.get_transport_info(startpoint, destination, year, month, day, hour, minutes)
     Price = GetTicketPrice.total_price_list(API_Result)
     routes_num = len(API_Result)
+    #return render_template('test.html', API_Result = API_Result, Price = Price, routes_num = routes_num)
+
     if routes_num == 0:
-        return render_template('test.html', API_Result = API_Result, Price = Price, routes_num = routes_num)
+        if request.method == 'POST':
+            return redirect(url_for('home'))
+        return render_template('test.html', API_Result=API_Result, Price=Price, routes_num=routes_num)
 
 """
 @taiwango.route('/', methods=['GET', 'POST'])  # 佳妤，taiwango 首頁
@@ -44,17 +48,12 @@ def routechoices(startpoint, destination, date, startTime, ticket):
     API_Result = GoogleAPI.get_transport_info(startpoint, destination, year, month, day, hour, minutes)
     Price = GetTicketPrice.total_price_list(API_Result)
     routes_num = len(API_Result)
-
     if ticket == '全票':
         ticket_num = 0
     elif ticket == '半票':
         ticket_num = 1
-
+        
     
-    if request.method == 'POST':
-        return redirect(url_for('home'))
-    return render_template('test.html', API_Result=API_Result, Price=Price, routes_num=routes_num)
-
     elif routes_num == 1:
         if request.method == 'POST':
             return redirect(url_for('pricechoices'))  # 補足丟進def的參數
@@ -78,11 +77,11 @@ def routechoices(startpoint, destination, date, startTime, ticket):
             return redirect(url_for('pricechoices'))  # 補足丟進def的參數
         create_p2_template(routes_num, API_Result, ticket_num)
         return render_template('web_page2.html')
-    """
+
 @taiwango.route('/pricechoices')  # 宜蓁，選擇之單一路線詳細價格資訊
 def pricechoices():  # 輸入需要的參數
     # 在這裡呼叫各交通工具的def
-    return 'here is the price!'
+    return 'here is the price!'"""
 
 
 if __name__ == '__main__':
