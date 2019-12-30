@@ -62,24 +62,23 @@ class GoogleAPI:
                 for item in routes_list[i]:  # 個別交通方式的資訊
                     if item['travel_mode'] == 'TRANSIT':
                         if item['transit_details']['line']['vehicle']['type'] == 'BUS':  # 路線編號 起站 訖站
-                            if len(item['transit_details']['line']['short_name']) == 4:
-                                transport_info = []
-                                transport_info.append(item['transit_details']['line']['vehicle']['type'])  # BUS
-                                transport_info.append(item['transit_details']['line']['short_name'])  # 路線編號
-                                transport_info.append(item['transit_details']['departure_stop']['name'])  # 起站名
-                                transport_info.append(item['transit_details']['arrival_stop']['name'])  # 訖站名
-                                departure_date_info = datetime.datetime.fromtimestamp(item['transit_details']['departure_time']['value'])  # 從UTC格式(秒)轉成datetime格式
-                                transport_info.append(departure_date_info.strftime('%Y/%m/%d'))     # 2019/12/05 //23:00(高鐵，日期，時間分兩個變數)
-                                transport_info.append(item['transit_details']['departure_time']['text'])  #上午/下午00:00
-                                arrival_date_info = datetime.datetime.fromtimestamp(item['transit_details']['arrival_time']['value'])  # 從UTC格式(秒)轉成datetime格式
-                                transport_info.append(arrival_date_info.strftime('%Y/%m/%d'))     # 2019/12/05 //23:00(高鐵，日期，時間分兩個變數)
-                                transport_info.append(item['transit_details']['arrival_time']['text'])  # 上午/下午00:00
-                                time = item['transit_details']['departure_time']['text'].split(':')
-                                dep_hour = time[0][2:]
-                                dep_minute = time[1]
-                                fare = GoogleAPI.get_bus_full_price(item['transit_details']['departure_stop']['name'], item['transit_details']['arrival_stop']['name'], year = int(year), month = int(month), day = int(day), hour = int(dep_hour), minutes = int(dep_minute))
-                                transport_info.append(fare)  # 全票票價(用來抓半票票價)
-                                transport_means.append(transport_info)
+                            transport_info = []
+                            transport_info.append(item['transit_details']['line']['vehicle']['type'])  # BUS
+                            transport_info.append(item['transit_details']['line']['short_name'])  # 路線編號
+                            transport_info.append(item['transit_details']['departure_stop']['name'])  # 起站名
+                            transport_info.append(item['transit_details']['arrival_stop']['name'])  # 訖站名
+                            departure_date_info = datetime.datetime.fromtimestamp(item['transit_details']['departure_time']['value'])  # 從UTC格式(秒)轉成datetime格式
+                            transport_info.append(departure_date_info.strftime('%Y/%m/%d'))     # 2019/12/05 //23:00(高鐵，日期，時間分兩個變數)
+                            transport_info.append(item['transit_details']['departure_time']['text'])  #上午/下午00:00
+                            arrival_date_info = datetime.datetime.fromtimestamp(item['transit_details']['arrival_time']['value'])  # 從UTC格式(秒)轉成datetime格式
+                            transport_info.append(arrival_date_info.strftime('%Y/%m/%d'))     # 2019/12/05 //23:00(高鐵，日期，時間分兩個變數)
+                            transport_info.append(item['transit_details']['arrival_time']['text'])  # 上午/下午00:00
+                            time = item['transit_details']['departure_time']['text'].split(':')
+                            dep_hour = time[0][2:]
+                            dep_minute = time[1]
+                            fare = GoogleAPI.get_bus_full_price(item['transit_details']['departure_stop']['name'], item['transit_details']['arrival_stop']['name'], year = int(year), month = int(month), day = int(day), hour = int(dep_hour), minutes = int(dep_minute))
+                            transport_info.append(fare)  # 全票票價(用來抓半票票價)
+                            transport_means.append(transport_info)
                         elif item['transit_details']['line']['vehicle']['type'] == 'HEAVY_RAIL':  # 高鐵/台鐵
                             if item['transit_details']['line']['short_name'] == '高鐵':  # 高鐵  日期 格式是2019/12/13 起站 訖站 車次號碼
                                 transport_info = []
@@ -367,7 +366,7 @@ class GetTicketPrice:
         # confirm_button.click()
 
         html = driver.page_source
-
+        # print(html)
 
         soup = BeautifulSoup(html, 'html.parser')
         # print(soup)
@@ -383,7 +382,7 @@ class GetTicketPrice:
                 if ch in numbers:
                     num += ch
             train_number_list.append(int(num))
-
+        # print(train_number_list)
         '''找票價'''
         price_tags =soup.find_all("td")
 
@@ -435,6 +434,9 @@ class GetTicketPrice:
                         bus_info = ['客運', None]
                     leg_info.append(bus_info)
                     #print(step)
+                elif step[0] == 'BUS':
+                    bus_info = ['客運', None]
+                    leg_info.append(bus_info)
                 elif step[0] == 'HEAVY_RAIL':
                     if step[1] == '高鐵':
                         StartStation = step[3]
@@ -518,7 +520,7 @@ class GetTicketPrice:
                         start = Name2NameCode[start]
                         end = Name2NameCode[end]
                         train_number = int(step[2])
-                        #print(start, end, train_number)
+                        # print(start, end, train_number)
                         rail_info = ['台鐵', GetTicketPrice.Railway(start, end, train_number)]
 
                         leg_info.append(rail_info)
