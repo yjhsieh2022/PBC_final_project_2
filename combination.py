@@ -108,6 +108,16 @@ class GoogleAPI:
                                 transport_info.append(date_info.strftime('%Y/%m/%d'))     # 2019/12/05 //23:00(高鐵，日期，時間分兩個變數
                                 transport_info.append(item['transit_details']['arrival_time']['text'])  # 上午/下午00:00
                                 transport_means.append(transport_info)
+                        else:
+                            transport_info = []
+                            transport_info.append(item['transit_details']['line']['vehicle']['type'])
+                            transport_info.append(item['transit_details']['line']['short_name'])  # 捷運/輕軌
+                            transport_info.append(item['transit_details']['departure_stop']['name'])  # 起站名
+                            transport_info.append(item['transit_details']['arrival_stop']['name'])  # 訖站名
+                            transport_info.append(item['transit_details']['departure_time']['text'])  # 上午/下午00:00
+                            transport_info.append(item['transit_details']['arrival_time']['text'])  # 上午/下午00:00
+                            transport_means.append(transport_info)
+                            
                 means_list.append(transport_means)
 
         return means_list  # 各路線中交通方式的詳細資訊
