@@ -39,7 +39,7 @@ def lowest(pricelist):
         lowestsum.append(lowest)
     return lowestsum
 """
-def create_p2_template(routes_num, API_Result, ticket_num, Price, ticket):
+def create_p2_template(routes_num, API_Result, ticket_num, Price, ticket, lowest_result):
 # 中間變數先填好
     # 儲存中間的html碼
     with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_page2_21.html', mode='r', encoding='utf-8') as html_21:
@@ -80,9 +80,10 @@ def create_p2_template(routes_num, API_Result, ticket_num, Price, ticket):
         with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_page2_2.html', mode='a', encoding='utf-8') as html_2:
             for line in Change_23_Lines:
                 line = line.replace("pricetype", str(ticket))
-                line = line.replace("price", str(lowest(pricelist(ticket_num, Price))[route_num]))
+                line = line.replace("price", str(lowest_result[route_num]))
                 line = line.replace("route1", "route"+str(route_num+1))
                 line = line.replace("Route1", "路線"+str(route_num+1))
+                line = line.replace("choose1", "choose"+str(route_num+1))
                 html_2.write(line)
 
     # 儲存html碼

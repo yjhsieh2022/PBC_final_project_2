@@ -29,37 +29,53 @@ def routechoices(startpoint, destination, date, startTime, ticket):
     elif ticket == '半票':
         ticket_num = 1
 
+    pricelist_result = pricelist(ticket_num, Price)
+    lowest_result = lowest(pricelist_result)
+
     if routes_num == 0:
-        if request.method == 'POST':
-            return redirect(url_for('home'))
         return render_template('web_page2_none.html')
 
     elif routes_num == 1:
         if request.method == 'POST':
-            return redirect(url_for('pricechoices'))  # 補足丟進def的參數
-        create_p2_template(routes_num, API_Result, ticket_num, Price, ticket)
+            return redirect(url_for('pricechoices'), route="route1")  # 只有一個路線可以選
+        create_p2_template(routes_num, API_Result, ticket_num, Price, ticket, lowest_result)
         return render_template('web_page2.html')
 
     elif routes_num == 2:
         if request.method == 'POST':
-            return redirect(url_for('pricechoices'))  # 補足丟進def的參數
-        create_p2_template(routes_num, API_Result, ticket_num, Price, ticket)
+            if request.form['route'] == '1':
+                return redirect(url_for('pricechoices'), route="route1")
+            elif request.form['route'] == '2':
+                return redirect(url_for('pricechoices'), route="route2")
+        create_p2_template(routes_num, API_Result, ticket_num, Price, ticket, lowest_result)
         return render_template('web_page2.html')
 
     elif routes_num == 3:
         if request.method == 'POST':
-            return redirect(url_for('pricechoices'))  # 補足丟進def的參數
-        create_p2_template(routes_num, API_Result, ticket_num, Price, ticket)
+            if request.form['route'] == '1':
+                return redirect(url_for('pricechoices'), route="route1")
+            elif request.form['route'] == '2':
+                return redirect(url_for('pricechoices'), route="route2")
+            elif request.form['route'] == '3':
+                return redirect(url_for('pricechoices'), route="route3")
+        create_p2_template(routes_num, API_Result, ticket_num, Price, ticket, lowest_result)
         return render_template('web_page2.html')
 
     elif routes_num == 4:
         if request.method == 'POST':
-            return redirect(url_for('pricechoices'))  # 補足丟進def的參數
-        create_p2_template(routes_num, API_Result, ticket_num, Price, ticket)
+            if request.form['route'] == '1' :
+                return redirect(url_for('pricechoices'), route="route1")
+            elif request.form['route'] == '2':
+                return redirect(url_for('pricechoices'), route="route2")
+            elif request.form['route'] == '3':
+                return redirect(url_for('pricechoices'), route="route3")
+            elif request.form['route'] == '4':
+                return redirect(url_for('pricechoices'), route="route4")
+        create_p2_template(routes_num, API_Result, ticket_num, Price, ticket, lowest_result)
         return render_template('web_page2.html')
 
 
-@taiwango.route('/pricechoices')  # 宜蓁，選擇之單一路線詳細價格資訊
+@taiwango.route('/pricechoices/<route>')  # 宜蓁，選擇之單一路線詳細價格資訊
 def pricechoices():  # 輸入需要的參數
     # 在這裡呼叫各交通工具的def
     return 'here is the price!'

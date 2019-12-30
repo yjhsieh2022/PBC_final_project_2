@@ -8,7 +8,10 @@ def pricelist(ticket_num, Price):
             RoutePrice = []
             for vehicle in routes:
                 if vehicle[1] != None:
-                    RoutePrice.append(vehicle[1][0][1])
+                    if vehicle[1][0] == '全票':
+                        RoutePrice.append(vehicle[1][1])
+                    else:
+                        RoutePrice.append(vehicle[1][0][1])
                 else:
                     RoutePrice.append('市內公車票價依各縣市不同')
             pricelist.append(RoutePrice)
@@ -17,7 +20,10 @@ def pricelist(ticket_num, Price):
             RoutePrice = []
             for vehicle in routes:
                 if vehicle[1] != None:
-                    RoutePrice.append(vehicle[1][1][1])
+                    if vehicle[1][1] == '半票':
+                        RoutePrice.append(vehicle[1][1])
+                    else:
+                        RoutePrice.append(vehicle[1][1][1])
                 else:
                     RoutePrice.append('市內公車票價依各縣市不同')
             pricelist.append(RoutePrice) 
@@ -50,9 +56,9 @@ def lowest(pricelist):
                 minprice = 0
             else:
                 minprice = price
-            lowest += minprice
-        lowest = '$'+str(lowest)+'起'
-        lowestsum.append(lowest)
+            lowest += int(minprice)
+        lowest_str = '$'+str(lowest)+'起'
+        lowestsum.append(lowest_str)
     return lowestsum
 
 def pricesum(pricelist): 
@@ -83,3 +89,15 @@ def pricesum(pricelist):
                 HSHR.append(HSHRprice)
             sum.append(HSHR)
     return sum
+
+"""
+ticket_num = 0
+Price = [[['台鐵', (['全票', 40, 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'], ['半票', 20, 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'])]],
+         [['台鐵', (['全票', 49, 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'], ['半票', 25, 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'])]],
+         [['客運', ['全票', 98]]],
+         [['客運', [['全票', 85], ['半票', 43]]]]]
+# Price = [[['台鐵', (['全票', 20, 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'], ['半票', 10, 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'])], ['高鐵', [['全票', {'標準車廂': 1460, '商務車廂': 2390, '自由座': 1415}, 'https://irs.thsrc.com.tw/IMINT/'], ['孩童票/敬老票/愛心票', {'標準車廂': 730, '商務車廂': 1195, '自由座': 705}, 'https://irs.thsrc.com.tw/IMINT/']]]], [['台鐵', (['全票', 20, 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'], ['半票', 10, 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'])], ['高鐵', [['全票', {'標準車 廂': 1460, '商務車廂': 2390, '自由座': 1415}, 'https://irs.thsrc.com.tw/IMINT/'], ['孩童票/敬老票/愛心票', {'標準車廂': 730, '商務車廂': 1195, '自由座': 705}, 'https://irs.thsrc.com.tw/IMINT/']]]]] 
+price_result = pricelist(ticket_num, Price)
+print(price_result)
+print(lowest(price_result))
+"""
