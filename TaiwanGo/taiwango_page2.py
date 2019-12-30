@@ -39,7 +39,7 @@ def lowest(pricelist):
         lowestsum.append(lowest)
     return lowestsum
 """
-def create_p2_template(routes_num, API_Result, ticket_num, Price, ticket, lowest_result):
+def create_p2_template(routes_num, API_Result, ticket_num, Price, ticket, lowest_result, pricelist_result, pricesum_result):
 # 中間變數先填好
     # 儲存中間的html碼
     with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_page2_21.html', mode='r', encoding='utf-8') as html_21:
@@ -68,6 +68,7 @@ def create_p2_template(routes_num, API_Result, ticket_num, Price, ticket, lowest
                         line = line.replace("starttime", str(API_Result[route_num][tran_num][5]))
                         line = line.replace("transtype", "客運"+str(API_Result[route_num][tran_num][1].strip('L')))
                         line = line.replace("endtime", str(API_Result[route_num][tran_num][7]))
+                        line = line.replace("transprice", str(pricelist_result[route_num][tran_num]))
                         html_2.write(line)
                 else:
                     for line in Change_22_Lines:
@@ -76,12 +77,12 @@ def create_p2_template(routes_num, API_Result, ticket_num, Price, ticket, lowest
                         line = line.replace("starttime", str(API_Result[route_num][tran_num][6]))
                         line = line.replace("transtype", str(API_Result[route_num][tran_num][1] + API_Result[route_num][tran_num][2]))
                         line = line.replace("endtime", str(API_Result[route_num][tran_num][8]))
+                        line = line.replace("transprice", str(pricelist_result[route_num][tran_num]))
                         html_2.write(line)
         with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_page2_2.html', mode='a', encoding='utf-8') as html_2:
             for line in Change_23_Lines:
                 line = line.replace("pricetype", str(ticket))
-                line = line.replace("price", str(lowest_result[route_num]))
-                line = line.replace("路線1", "路線"+str(route_num+1))
+                line = line.replace("pricesum", str(pricesum_result[route_num]))
                 html_2.write(line)
 
     # 儲存html碼
