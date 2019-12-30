@@ -39,15 +39,14 @@ def lowest(pricelist):
         lowestsum.append(lowest)
     return lowestsum
 """
-
-def create_p2_template(routes_num, API_Result, ticket_num):
+def create_p2_template(routes_num, API_Result, ticket_num, Price, ticket):
 # 中間變數先填好
     # 儲存中間的html碼
-    with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_test21.html', mode='r', encoding='utf-8') as html_21:
+    with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_page2_21.html', mode='r', encoding='utf-8') as html_21:
         html_21_Lines = html_21.readlines()
-    with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_test22.html', mode='r', encoding='utf-8') as html_22:
+    with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_page2_22.html', mode='r', encoding='utf-8') as html_22:
         html_22_Lines = html_22.readlines()
-    with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_test23.html', mode='r', encoding='utf-8') as html_23:
+    with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_page2_23.html', mode='r', encoding='utf-8') as html_23:
         html_23_Lines = html_23.readlines()
     # 寫進中間的template
     Change_22_Lines = html_22_Lines
@@ -55,13 +54,13 @@ def create_p2_template(routes_num, API_Result, ticket_num):
     for route_num in range(routes_num):
         r_trans_num = len(API_Result[route_num])
         if route_num == 0:  # 如果是重新來過，要覆寫
-            with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_test2.html', mode='w', encoding='utf-8') as html_2:
+            with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_page2_2.html', mode='w', encoding='utf-8') as html_2:
                 html_2.writelines(html_21_Lines)
         else:
-            with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_test2.html', mode='a', encoding='utf-8') as html_2:
+            with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_page2_2.html', mode='a', encoding='utf-8') as html_2:
                 html_2.writelines(html_21_Lines)
         for tran_num in range(r_trans_num):  # 幾種交通工具複製幾次
-            with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_test2.html', mode='a', encoding='utf-8') as html_2:
+            with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_page2_2.html', mode='a', encoding='utf-8') as html_2:
                 if API_Result[route_num][tran_num][0] == 'BUS': # BUS的API輸出順序跟其他車種不一樣，對應位置要變
                     for line in Change_22_Lines:
                         line = line.replace("startstation", str(API_Result[route_num][tran_num][2]))
@@ -78,28 +77,28 @@ def create_p2_template(routes_num, API_Result, ticket_num):
                         line = line.replace("transtype", str(API_Result[route_num][tran_num][1] + API_Result[route_num][tran_num][2]))
                         line = line.replace("endtime", str(API_Result[route_num][tran_num][8]))
                         html_2.write(line)
-        with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_test2.html', mode='a', encoding='utf-8') as html_2:
+        with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_page2_2.html', mode='a', encoding='utf-8') as html_2:
             for line in Change_23_Lines:
-                line = line.replace("pricetype", str(Price[route_num][tran_num][1][ticket_num][0]))
+                line = line.replace("pricetype", str(ticket))
                 line = line.replace("price", str(lowest(pricelist(ticket_num, Price))[route_num]))
                 line = line.replace("route1", "route"+str(route_num+1))
                 line = line.replace("Route1", "路線"+str(route_num+1))
                 html_2.write(line)
 
     # 儲存html碼
-    with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_test1.html', mode='r', encoding='utf-8') as begin:
+    with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_page2_1.html', mode='r', encoding='utf-8') as begin:
         Begin_Lines = begin.readlines()
-    with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_test2.html', mode='r', encoding='utf-8') as middle:
+    with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_page2_2.html', mode='r', encoding='utf-8') as middle:
         Middle_Lines = middle.readlines()
-    with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_test3.html', mode='r', encoding='utf-8') as end:
+    with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_page2_3.html', mode='r', encoding='utf-8') as end:
         End_Lines = end.readlines()
 
     # 寫進template
-    with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_test.html', mode='w', encoding='utf-8') as combination:
+    with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_page2.html', mode='w', encoding='utf-8') as combination:
         combination.writelines(Begin_Lines)
-    with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_test.html', mode='a', encoding='utf-8') as combination:
+    with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_page2.html', mode='a', encoding='utf-8') as combination:
         combination.writelines(Middle_Lines)
-    with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_test.html', mode='a', encoding='utf-8') as combination:
+    with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_page2.html', mode='a', encoding='utf-8') as combination:
         combination.writelines(End_Lines)
     return None
 
