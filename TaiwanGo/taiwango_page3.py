@@ -120,7 +120,7 @@ def create_p3_template(routes_num, r_trans_num, API_Result, Price, ticket_num):
                     line = line.replace("price", str(pricelist(ticket_num, Price)[route_num][tran_num]))
                     line = line.replace("hyperlink", str(hyperlink(Price)[route_num][tran_num]))
                     html_2.write(line)
-    with open(file='C:\\Users\\宜蓁\\Documents\\大五\\python\\final_project\\WJtest\\templates\\web_page3_2.html', mode='a', encoding='utf-8') as html_2:
+    with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_page3_2.html', mode='a', encoding='utf-8') as html_2:
         for line in Change_23_Lines:
             line = line.replace("pricetype", str(Price[route_num][tran_num][1][ticket_num][0]))
             line = line.replace("pricesum", str(pricesum(pricelist(ticket_num, Price))[route_num]))

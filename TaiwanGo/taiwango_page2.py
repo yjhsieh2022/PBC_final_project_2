@@ -81,9 +81,7 @@ def create_p2_template(routes_num, API_Result, ticket_num, Price, ticket, lowest
             for line in Change_23_Lines:
                 line = line.replace("pricetype", str(ticket))
                 line = line.replace("price", str(lowest_result[route_num]))
-                line = line.replace("route1", "route"+str(route_num+1))
-                line = line.replace("Route1", "路線"+str(route_num+1))
-                line = line.replace("choose1", "choose"+str(route_num+1))
+                line = line.replace("路線1", "路線"+str(route_num+1))
                 html_2.write(line)
 
     # 儲存html碼

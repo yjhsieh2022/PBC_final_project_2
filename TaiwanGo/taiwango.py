@@ -43,33 +43,33 @@ def routechoices(startpoint, destination, date, startTime, ticket):
 
     elif routes_num == 2:
         if request.method == 'POST':
-            if request.form['route'] == '1':
+            if request.form['route'] == '路線1':
                 return redirect(url_for('pricechoices'), route="route1")
-            elif request.form['route'] == '2':
+            elif request.form['route'] == '路線2':
                 return redirect(url_for('pricechoices'), route="route2")
         create_p2_template(routes_num, API_Result, ticket_num, Price, ticket, lowest_result)
         return render_template('web_page2.html')
 
     elif routes_num == 3:
         if request.method == 'POST':
-            if request.form['route'] == '1':
+            if request.form['route'] == '路線1':
                 return redirect(url_for('pricechoices'), route="route1")
-            elif request.form['route'] == '2':
+            elif request.form['route'] == '路線2':
                 return redirect(url_for('pricechoices'), route="route2")
-            elif request.form['route'] == '3':
+            elif request.form['route'] == '路線3':
                 return redirect(url_for('pricechoices'), route="route3")
         create_p2_template(routes_num, API_Result, ticket_num, Price, ticket, lowest_result)
         return render_template('web_page2.html')
 
     elif routes_num == 4:
         if request.method == 'POST':
-            if request.form['route'] == '1' :
+            if request.form['route'] == '路線1' :
                 return redirect(url_for('pricechoices'), route="route1")
-            elif request.form['route'] == '2':
+            elif request.form['route'] == '路線2':
                 return redirect(url_for('pricechoices'), route="route2")
-            elif request.form['route'] == '3':
+            elif request.form['route'] == '路線3':
                 return redirect(url_for('pricechoices'), route="route3")
-            elif request.form['route'] == '4':
+            elif request.form['route'] == '路線4':
                 return redirect(url_for('pricechoices'), route="route4")
         create_p2_template(routes_num, API_Result, ticket_num, Price, ticket, lowest_result)
         return render_template('web_page2.html')
