@@ -5,9 +5,9 @@
     <title>Route Details</title>
 </head>
 <body>
-    <form method='post' action={{ url_for('routechoices') }} align="center"> 
+    <form method='post'> 
         <p align="center">
-        交通資訊<br>
+        乘車路線<br>
         此條路線是你心儀的嗎?
     </p>
         <p>
@@ -25,51 +25,53 @@
                     <td style="width:500px" align="center" valign="center" >
                     <table style="border:1px white;background-color:#f2f2f2;" align="center" border='0'>
                         <td style="width:250px" align="center" valign="center">
-                            桃園市政府<br>
+                            松山車站<br>
                             &emsp;|<br>
                             &emsp;|<br>
                             &emsp;|<br>
-                            桃園火車站<br>
+                            板橋車站<br>
                             <br>
                     </td>
                         <td style="width:250px" align="center" valign="center">
-                            上午11:17<br>
+                            上午9:16<br>
                             <br>
-                            BUS L112<br>
+                            復興/區間 1147<br>
                             <br>
-                            上午11:25<br>
+                            上午9:34<br>
                             <br>
                     </td>
                         <td style="width:250px" align="center" valign="center">
-                            價錢: 市內公車票價依各縣市不同
+                            價錢: 20
                     </td>
                         <td style="width:250px" align="center" valign="center">
-                            尚無線上訂票系統
+                            <a target = "_blank" href = https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query>
+                                <input type=button value = 訂票去! onclick="window.open.href()">
+                            </a>
                     </td>
                 </table>
 
                     <table style="border:1px white;background-color:#f2f2f2;" align="center" border='0'>
                         <td style="width:250px" align="center" valign="center">
-                            桃園車站<br>
+                            板橋車站<br>
                             &emsp;|<br>
                             &emsp;|<br>
                             &emsp;|<br>
-                            臺中車站<br>
+                            新左營站<br>
                             <br>
                     </td>
                         <td style="width:250px" align="center" valign="center">
-                            上午11:30<br>
+                            上午9:39<br>
                             <br>
-                            自強號 121<br>
+                            高鐵 117<br>
                             <br>
-                            下午1:13<br>
+                            上午11:05<br>
                             <br>
                     </td>
                         <td style="width:250px" align="center" valign="center">
-                            價錢: 308
+                            價錢: {'標準車廂': 1460, '商務車廂': 2390, '自由座': 1415}
                     </td>
                         <td style="width:250px" align="center" valign="center">
-                            <a target = "_blank" href = https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query>
+                            <a target = "_blank" href = https://irs.thsrc.com.tw/IMINT/>
                                 <input type=button value = 訂票去! onclick="window.open.href()">
                             </a>
                     </td>
@@ -79,7 +81,7 @@
                         <td style="width:250px" align="center" valign="center"></td>
                         <td style="width:250px" align="center" valign="center"></td>
                         <td style="width:250px" align="center" valign="center">
-                            全票 總價: 308
+                            全票 總價: [1480, 2410, 1435]
                         </td>
                         <td></td>
                 </table>

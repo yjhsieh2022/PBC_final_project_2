@@ -1,4 +1,3 @@
-"""
 # page1 傳來的票種選擇: 暫定參數為ticket = 0(全票), 1(半票) 
 
 # 將各條路線的價格擷取出來，放入pricelist
@@ -66,7 +65,6 @@ def pricesum(pricelist):
                 HSHR.append(HSHRprice)
             sum.append(HSHR)
     return sum
-"""
 
 def create_p3_template(routes_num, r_trans_num, API_Result, Price, ticket_num):
 # 中間變數先填好
@@ -152,10 +150,18 @@ Price = [[['客運', None], ['台鐵', (['全票', 308, 'https://www.railway.gov
          [['台鐵', (['全票', 308, 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'], ['半票', 154, 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'])]],
          [['客運', None], ['台鐵', (['全票', 32, 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'], ['半票', 16, 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'])], ['高鐵', [['全票', {'標準車廂': 670, ' 商務車廂': 1210, '自由座': 645, '早鳥65折': 435, '早鳥8折': 535, '早鳥9折': 600, '大學生75折': 500}, 'https://irs.thsrc.com.tw/IMINT/'], ['孩童票/敬老票/愛心票', {'標準車廂': 335, '商務車廂': 605, '自由座': 320}, 'https://irs.thsrc.com.tw/IMINT/']]], ['台鐵', (['全票', 15, 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'], ['半票', 8, 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'])]],
          [['台鐵', (['全票', 32, 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'], ['半票', 16, 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'])], ['高鐵', [['全票', {'標準車廂': 670, '商務車廂': 1210, '自由座': 645, '早鳥65折': 435, '早鳥8折': 535, '早鳥9折': 600, '大學生75折': 500}, 'https://irs.thsrc.com.tw/IMINT/'], ['孩童票/敬老票/愛心 票', {'標準車廂': 335, '商務車廂': 605, '自由座': 320}, 'https://irs.thsrc.com.tw/IMINT/']]], ['台鐵', (['全票', 15, 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'], ['半票', 8, 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'])]]]
+"""
+
+API_Result = [[['HEAVY_RAIL', '復興/區間', '1147', '松山車站', '板橋車站', '2019/12/31', '上午9:16', '2019/12/31', '上午9:34'], ['HEAVY_RAIL', '高鐵', '117', '板橋車站', '新左營站', '2019/12/31', '上午9:39', '2019/12/31', '上午11:05']],
+              [['HEAVY_RAIL', '復興/區間', '1157', '松山車站', '板橋車站', '2019/12/31', '上午10:16', '2019/12/31', '上午10:34'], ['HEAVY_RAIL', '高鐵', '121', '板橋車站', '新左營站', '2019/12/31', '上午10:39', '2019/12/31', '下午12:05']]]
+
+Price = [[['台鐵', (['全票', 20, 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'], ['半票', 10, 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'])],
+          ['高鐵', [['全票', {'標準車廂': 1460, '商務車廂': 2390, '自由座': 1415}, 'https://irs.thsrc.com.tw/IMINT/'], ['孩童票/敬老票/愛心票', {'標準車廂': 730, '商務車廂': 1195, '自由座': 705}, 'https://irs.thsrc.com.tw/IMINT/']]]],
+         [['台鐵', (['全票', 20, 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'], ['半票', 10, 'https://www.railway.gov.tw/tra-tip-web/tip/tip001/tip123/query'])],
+          ['高鐵', [['全票', {'標準車 廂': 1460, '商務車廂': 2390, '自由座': 1415}, 'https://irs.thsrc.com.tw/IMINT/'], ['孩童票/敬老票/愛心票', {'標準車廂': 730, '商務車廂': 1195, '自由座': 705}, 'https://irs.thsrc.com.tw/IMINT/']]]]]
 
 route_num = 0
 r_trans_num = len(API_Result[route_num])
 ticket_num = 0  # 全票
 
 create_p3_template(route_num, r_trans_num, API_Result, Price, ticket_num)
-"""
