@@ -534,6 +534,9 @@ class GetTicketPrice:
                         rail_info = ['台鐵', GetTicketPrice.Railway(start, end, train_number)]
 
                         leg_info.append(rail_info)
+                elif step[0] == 'SUBWAY':
+                    bus_info = ['捷運', None]
+                    leg_info.append(bus_info)
             route_info.append(leg_info)
         return route_info
 
