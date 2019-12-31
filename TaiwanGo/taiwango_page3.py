@@ -163,5 +163,8 @@ Price = [[['台鐵', (['全票', 20, 'https://www.railway.gov.tw/tra-tip-web/tip
 route_num = 0
 r_trans_num = len(API_Result[route_num])
 ticket_num = 0  # 全票
+ticket = 0
 
 create_p3_template(route_num, r_trans_num, API_Result, Price, ticket_num)
+
+print(pricelist(ticket, Price))

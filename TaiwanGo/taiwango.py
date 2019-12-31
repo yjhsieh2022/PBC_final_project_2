@@ -6,13 +6,13 @@ from taiwango_page2 import create_p2_template
 
 taiwango = Flask(__name__)
 
-@taiwango.route('/', methods=['GET', 'POST'])  # 佳妤，taiwango 首頁
+@taiwango.route('/', methods=['GET', 'POST'])  # taiwango 首頁
 def home():
     if request.method == 'POST':
         return redirect(url_for('routechoices', startpoint=request.form.get('startpoint'), destination=request.form.get('destination'), date=request.form.get('date'), startTime=request.form.get('startTime'), ticket=request.form.get('ticket')))
     return render_template('web_page1.html')
 
-@taiwango.route('/routechoices/<startpoint>/<destination>/<date>/<startTime>/<ticket>', methods=['GET', 'POST'])  # 婉如，各路線選擇
+@taiwango.route('/routechoices/<startpoint>/<destination>/<date>/<startTime>/<ticket>', methods=['GET', 'POST'])  # 各路線選擇
 def routechoices(startpoint, destination, date, startTime, ticket):
     year = int(date[:4])
     month = int(date[5:7])
@@ -30,20 +30,13 @@ def routechoices(startpoint, destination, date, startTime, ticket):
         ticket_num = 1
 
     pricelist_result = pricelist(ticket_num, Price)
-    pricesum_result = (pricelist_result)
-    lowest_result = lowest(pricelist_result)
+    pricesum_result = pricesum(pricelist_result)
 
     if routes_num == 0:
         return render_template('web_page2_none.html')
     else:
-        create_p2_template(routes_num, API_Result, ticket_num, Price, ticket, pricelist_result, lowest_result, pricesum_result)
+        create_p2_template(routes_num, API_Result, ticket_num, Price, ticket, pricelist_result, pricesum_result)
         return render_template('web_page2.html')
-
-
-@taiwango.route('/pricechoices/<route>')  # 宜蓁，選擇之單一路線詳細價格資訊
-def pricechoices():  # 輸入需要的參數
-    # 在這裡呼叫各交通工具的def
-    return 'here is the price!'
 
 
 if __name__ == '__main__':
