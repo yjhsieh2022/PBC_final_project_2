@@ -39,7 +39,7 @@ def lowest(pricelist):
         lowestsum.append(lowest)
     return lowestsum
 """
-def create_p2_template(routes_num, API_Result, ticket_num, Price, ticket, lowest_result, pricelist_result, pricesum_result):
+def create_p2_template(routes_num, API_Result, ticket_num, Price, ticket, pricelist_result, pricesum_result):
 # 中間變數先填好
     # 儲存中間的html碼
     with open(file='C:\\Users\\Hsiao Wan-Ju\\Desktop\\TaiwanGo\\templates\\web_page2_21.html', mode='r', encoding='utf-8') as html_21:
